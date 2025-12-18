@@ -1,0 +1,46 @@
+/**
+ * Omni Icon Web Component Styles
+ * Optimized for minimal CSS bundle size
+ */
+
+@layer omni-icon {
+	/* Base icon styles - only essential properties */
+	omni-icon {
+		display: inline-block;
+		line-height: 0;
+		vertical-align: baseline;
+		
+		/* Default: fill container when no width/height attributes */
+		&:not([width]):not([height]) {
+			width: 100%;
+			height: 100%;
+			
+			/* In text elements: use font size (1em) */
+			:is(p, span, a, button, label, h1, h2, h3, h4, h5, h6, li, td, th) & {
+				width: 1em;
+				height: 1em;
+			}
+		}
+		
+		&[inline] {
+			vertical-align: middle;
+		}
+	}
+
+	/* Simplified loading skeleton - single gradient stop */
+	@keyframes oiwc-skeleton-pulse {
+		0%, 100% { background-position: 200% 0; }
+	}
+
+	omni-icon[data-oiwc-state="loading"] {
+		background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+		background-size: 200% 100%;
+		animation: oiwc-skeleton-pulse 1.5s ease-in-out infinite;
+		border-radius: 4px;
+	}
+
+	/* Simplified dark mode support */
+	:is([data-theme="dark"], .dark) omni-icon[data-oiwc-state="loading"] {
+		background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+	}
+}

@@ -1,0 +1,22 @@
+type: http_request
+model: http_request
+id: rq_KZyqWkfWpB
+createdAt: 2025-08-02T08:18:12.227826
+updatedAt: 2025-11-28T12:04:13.016726
+workspaceId: wk_PJP8ubThP7
+folderId: fl_eu4gmehBNd
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Collections
+sortPriority: 4000.0
+url: ${[ WP_URL ]}/omni-icon/v1/icon/collections
+urlParameters:
+- enabled: true
+  name: ''
+  value: ''
+  id: enFN2fvuZx

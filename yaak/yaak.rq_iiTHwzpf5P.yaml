@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_iiTHwzpf5P
+createdAt: 2025-11-28T12:04:07.831447
+updatedAt: 2025-11-28T12:20:33.678934
+workspaceId: wk_PJP8ubThP7
+folderId: fl_eu4gmehBNd
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Iconify Svg
+sortPriority: 3333.3333333333335
+url: https://api.iconify.design/tabler/home.svg
+urlParameters: []

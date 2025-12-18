@@ -1,0 +1,1244 @@
+/* ========================================
+    RankMath-Style Control Panel
+   ======================================== */
+
+/* Base Color Variables */
+:root {
+	/* --oiib-primary-color: #667eea; */
+	--oiib-primary-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+}
+
+/* Panel Container */
+.oiib-panel {
+	background: #f8f9fa;
+	margin: 0 !important;
+}
+
+/* ========================================
+    Tab Navigation
+   ======================================== */
+.oiib-tab-panel {
+	background: white;
+}
+
+.oiib-tab-panel .components-tab-panel__tabs {
+	display: flex;
+	background: #ffffff;
+	border-bottom: 2px solid #e8ecef;
+	margin: 0;
+	padding: 0 12px;
+}
+
+.oiib-tab-panel .components-tab-panel__tabs-item {
+	background: transparent;
+	border: none;
+	border-bottom: 3px solid transparent;
+	padding: 16px 20px;
+	font-size: 14px;
+	font-weight: 600;
+	color: #6b7280;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	margin: 0;
+	border-radius: 0;
+	position: relative;
+	flex: 1;
+	text-align: center;
+}
+
+.oiib-tab-panel .components-tab-panel__tabs-item:hover {
+	color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 5%, white);
+}
+
+.oiib-tab-panel .components-tab-panel__tabs-item.is-active {
+	color: var(--oiib-primary-color);
+	border-bottom-color: var(--oiib-primary-color);
+	background: transparent;
+}
+
+.oiib-tab-panel .components-tab-panel__tabs-item::after {
+	display: none !important;
+}
+
+.oiib-tab-title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.oiib-tab-title svg {
+	width: 18px;
+	height: 18px;
+}
+
+/* ========================================
+    Tab Content
+   ======================================== */
+.oiib-tab-content {
+	padding: 16px;
+	background: #f8f9fa;
+	min-height: 300px;
+}
+
+/* ========================================
+    Card Component
+   ======================================== */
+.oiib-card {
+	background: white;
+	border-radius: 12px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+	margin-bottom: 16px;
+	border: 1px solid #e8ecef;
+	overflow: hidden;
+	transition: all 0.2s ease;
+}
+
+.oiib-card:hover {
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	border-color: #d1d5db;
+}
+
+.oiib-card:last-child {
+	margin-bottom: 0;
+}
+
+/* Card Header */
+.oiib-card-header {
+	padding: 16px 20px;
+	border-bottom: 1px solid #f3f4f6;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #fafbfc;
+}
+
+.oiib-card-header h4 {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 700;
+	color: #1f2937;
+	letter-spacing: -0.01em;
+}
+
+/* Card Body */
+.oiib-card-body {
+	padding: 20px;
+}
+
+/* ========================================
+    Form Elements
+   ======================================== */
+
+/* Form Group */
+.oiib-form-group {
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.oiib-form-group:last-child {
+	margin-bottom: 0;
+}
+
+/* Labels */
+.oiib-label {
+	display: block;
+	font-size: 13px;
+	font-weight: 600;
+	color: #374151;
+	margin-bottom: 8px;
+	letter-spacing: -0.01em;
+}
+
+.oiib-required {
+	color: #d63638;
+	margin-left: 2px;
+}
+
+.oiib-label-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 12px;
+}
+
+.oiib-label-row-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.oiib-value-display {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 8%, white);
+	padding: 4px 12px;
+	border-radius: 6px;
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+/* Clear Button */
+.oiib-clear-btn {
+	background: transparent;
+	border: none;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	border-radius: 6px;
+	transition: all 0.2s ease;
+	color: #9ca3af;
+}
+
+.oiib-clear-btn:hover:not(:disabled) {
+	background: #fee2e2;
+	color: #ef4444;
+	transform: scale(1.1);
+}
+
+.oiib-clear-btn svg {
+	width: 14px;
+	height: 14px;
+}
+
+.oiib-clear-btn-disabled {
+	opacity: 0.3;
+}
+
+/* Dimension Input Wrapper */
+.oiib-dimension-wrapper {
+	position: relative;
+	display: inline-block;
+}
+
+.oiib-dimension-input {
+	width: 70px;
+	padding: 6px 28px 6px 10px;
+	border: 2px solid #e5e7eb;
+	border-radius: 6px;
+	font-size: 13px;
+	font-weight: 600;
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+	text-align: left;
+	color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 8%, white);
+	transition: all 0.2s ease;
+}
+
+.oiib-dimension-input:hover {
+	border-color: #d1d5db;
+	background: color-mix(in srgb, var(--oiib-primary-color) 12%, white);
+}
+
+.oiib-dimension-input:focus {
+	outline: none;
+	border-color: var(--oiib-primary-color);
+	background: white;
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--oiib-primary-color) 10%, transparent);
+}
+
+.oiib-dimension-input::placeholder {
+	color: color-mix(in srgb, var(--oiib-primary-color) 30%, transparent);
+	font-weight: 500;
+	opacity: 0.5;
+}
+
+.oiib-dimension-unit {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 11px;
+	font-weight: 600;
+	color: #9ca3af;
+	pointer-events: none;
+	user-select: none;
+}
+
+/* Text Input */
+.oiib-input-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: white;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 6px;
+	transition: all 0.2s ease;
+	min-height: 48px;
+}
+
+.oiib-input-wrapper:hover {
+	border-color: #d1d5db;
+}
+
+.oiib-input-wrapper:focus-within {
+	border-color: var(--oiib-primary-color);
+	box-shadow: 0 0 0 4px color-mix(in srgb, var(--oiib-primary-color) 10%, transparent);
+}
+
+.oiib-input {
+	flex: 1;
+	min-width: 0;
+	border: none !important;
+	outline: none !important;
+	background: transparent !important;
+	font-size: 14px;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	color: #1f2937;
+	padding-right: 0px !important;
+	box-shadow: none !important;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+.oiib-input:focus {
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.oiib-input::placeholder {
+	color: #9ca3af;
+}
+
+.oiib-input-icon-search {
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	background: color-mix(in srgb, var(--oiib-primary-color) 5%, white);
+	border-radius: 6px;
+	border: 1px solid #e5e7eb;
+	transition: all 0.2s ease;
+	color: color-mix(in srgb, var(--oiib-primary-color) 70%, #374151);
+	cursor: pointer;
+}
+
+.oiib-input-icon-search:hover {
+	background: color-mix(in srgb, var(--oiib-primary-color) 10%, white);
+	border-color: var(--oiib-primary-color);
+	color: var(--oiib-primary-color);
+}
+
+/* Help Text */
+.oiib-help-text {
+	display: flex;
+	align-items: flex-start;
+	gap: 6px;
+	margin-top: 8px;
+	font-size: 12px;
+	color: #6b7280;
+	line-height: 1.5;
+	background: #f9fafb;
+	padding: 8px 12px;
+	border-radius: 6px;
+	border-left: 3px solid var(--oiib-primary-color);
+}
+
+.oiib-help-text svg {
+	width: 14px;
+	height: 14px;
+	flex-shrink: 0;
+	margin-top: 2px;
+	color: var(--oiib-primary-color);
+}
+
+/* Slider Control */
+.oiib-slider-control {
+	position: relative;
+	padding: 8px 0;
+}
+
+.oiib-slider {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 6px;
+	border-radius: 3px;
+	background: var(--oiib-primary-color);
+	outline: none;
+	position: relative;
+}
+
+.oiib-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: white;
+	cursor: pointer;
+	box-shadow: 0 2px 8px color-mix(in srgb, var(--oiib-primary-color) 40%, transparent);
+	border: 3px solid var(--oiib-primary-color);
+	transition: all 0.2s ease;
+}
+
+.oiib-slider::-webkit-slider-thumb:hover {
+	transform: scale(1.2);
+	box-shadow: 0 4px 12px color-mix(in srgb, var(--oiib-primary-color) 50%, transparent);
+}
+
+.oiib-slider::-webkit-slider-thumb:active {
+	transform: scale(1.1);
+}
+
+.oiib-slider::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: white;
+	cursor: pointer;
+	box-shadow: 0 2px 8px color-mix(in srgb, var(--oiib-primary-color) 40%, transparent);
+	border: 3px solid var(--oiib-primary-color);
+	transition: all 0.2s ease;
+}
+
+.oiib-slider::-moz-range-thumb:hover {
+	transform: scale(1.2);
+	box-shadow: 0 4px 12px color-mix(in srgb, var(--oiib-primary-color) 50%, transparent);
+}
+
+.oiib-slider::-moz-range-thumb:active {
+	transform: scale(1.1);
+}
+
+/* Color Input with Swatch */
+.oiib-color-input-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	background: white;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	padding: 6px;
+	transition: all 0.2s ease;
+	min-height: 42px;
+}
+
+.oiib-color-input-wrapper:hover {
+	border-color: #d1d5db;
+}
+
+.oiib-color-input-wrapper:focus-within {
+	border-color: var(--oiib-primary-color);
+	box-shadow: 0 0 0 4px color-mix(in srgb, var(--oiib-primary-color) 10%, transparent);
+}
+
+.oiib-color-swatch-container {
+	position: relative;
+	flex-shrink: 0;
+	width: 28px;
+	height: 28px;
+}
+
+.oiib-color-swatch {
+	width: 28px;
+	height: 28px;
+	border-radius: 5px;
+	/* border: 2px solid #e5e7eb; */
+	border: 0;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	pointer-events: none;
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.oiib-color-swatch-picker {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 28px;
+	height: 28px;
+	opacity: 0;
+	cursor: pointer;
+	border: none;
+	padding: 0;
+	margin: 0;
+}
+
+.oiib-color-swatch-picker::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+
+.oiib-color-swatch-picker::-webkit-color-swatch {
+	border: none;
+}
+
+.oiib-color-swatch-picker::-moz-color-swatch {
+	border: none;
+}
+
+.oiib-color-swatch-container:hover .oiib-color-swatch {
+	border-color: var(--oiib-primary-color);
+	transform: scale(1.05);
+}
+
+.oiib-color-value-input {
+	flex: 1;
+	min-width: 0;
+	border: none !important;
+	outline: none !important;
+	background: transparent !important;
+	font-size: 14px;
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+	color: #374151;
+	font-weight: 500;
+	padding: 0 !important;
+	box-shadow: none !important;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.oiib-color-value-input:focus {
+	border: none !important;
+	outline: none !important;
+	box-shadow: none !important;
+}
+
+.oiib-color-value-input::placeholder {
+	color: #9ca3af;
+}
+
+/* ========================================
+    Badges & Buttons
+   ======================================== */
+
+/* Badge */
+.oiib-badge {
+	display: inline-flex;
+	align-items: center;
+	padding: 4px 10px;
+	border-radius: 6px;
+	font-size: 11px;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.oiib-badge-required {
+	background: #f5576c;
+	color: white;
+	/* box-shadow: 0 2px 4px color-mix(in srgb, #f5576c 20%, transparent); */
+}
+
+/* Reset Button - WordPress destructive tertiary style */
+.oiib-reset-btn {
+	background: transparent;
+	color: #cc1818;
+	border: none;
+	padding: 6px 12px;
+	border-radius: 2px;
+	font-size: 12px;
+	font-weight: 400;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.oiib-reset-btn:hover:not(:disabled) {
+	color: #a02020;
+	background: rgba(204, 24, 24, 0.04);
+}
+
+.oiib-reset-btn:focus:not(:disabled) {
+	color: #a02020;
+	box-shadow: 0 0 0 1px #cc1818;
+}
+
+.oiib-reset-btn-disabled {
+	opacity: 0.3;
+	cursor: default;
+}
+
+/* ========================================
+    Icon Preview Card
+   ======================================== */
+.oiib-preview-card {
+	margin-top: 16px;
+	padding: 24px;
+	background: color-mix(in srgb, var(--oiib-primary-color) 5%, white);
+	border-radius: 8px;
+	border: 2px dashed color-mix(in srgb, var(--oiib-primary-color) 25%, transparent);
+	text-align: center;
+}
+
+.oiib-preview-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 80px;
+	margin-bottom: 12px;
+}
+
+.oiib-preview-content omni-icon {
+	width: 48px !important;
+	height: 48px !important;
+}
+
+.oiib-preview-label {
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--oiib-primary-color);
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+	background: white;
+	padding: 6px 12px;
+	border-radius: 6px;
+	display: inline-block;
+	word-break: break-word;
+	overflow-wrap: break-word;
+	max-width: 100%;
+}
+
+/* ========================================
+    Icon Picker Modal
+   ======================================== */
+.oiib-icon-picker-modal {
+	max-height: calc(100% - 128px) !important;
+}
+
+.oiib-icon-picker-modal .components-modal__content {
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	flex: 1;
+}
+
+.oiib-icon-picker-modal .components-modal__header {
+	background: #fafbfc;
+	border-bottom: 1px solid #e8ecef;
+	padding: 20px 24px;
+	margin: 0;
+	flex-shrink: 0;
+	position: relative;
+	z-index: 1;
+}
+
+/* Make the body wrapper (sibling of header) fill available space */
+.oiib-icon-picker-modal .components-modal__header + * {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.oiib-icon-picker-modal .components-modal__header h1 {
+	font-size: 18px;
+	font-weight: 700;
+	color: #1f2937;
+}
+
+.oiib-icon-picker-content {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
+	max-height: 100%;
+}
+
+/* Search Bar */
+.oiib-icon-picker-search {
+	padding: 16px 24px;
+	background: white;
+	border-bottom: 1px solid #e8ecef;
+	flex-shrink: 0;
+	position: relative;
+	z-index: 0;
+}
+
+.oiib-search-wrapper {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	background: #f8f9fa;
+	border: 2px solid #e5e7eb;
+	border-radius: 10px;
+	padding: 12px 16px;
+	transition: all 0.2s ease;
+}
+
+.oiib-search-wrapper:focus-within {
+	border-color: var(--oiib-primary-color);
+	background: white;
+	box-shadow: 0 0 0 4px color-mix(in srgb, var(--oiib-primary-color) 10%, transparent);
+}
+
+.oiib-search-icon {
+	width: 20px;
+	height: 20px;
+	color: #9ca3af;
+	flex-shrink: 0;
+}
+
+.oiib-search-input {
+	flex: 1;
+	border: none !important;
+	outline: none !important;
+	background: transparent !important;
+	font-size: 15px;
+	color: #1f2937;
+	padding: 0 !important;
+	margin: 0 !important;
+	box-shadow: none !important;
+}
+
+.oiib-search-input::placeholder {
+	color: #9ca3af;
+}
+
+.oiib-search-clear {
+	background: transparent;
+	border: none;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	border-radius: 6px;
+	transition: all 0.2s ease;
+	color: #9ca3af;
+	flex-shrink: 0;
+}
+
+.oiib-search-clear:hover {
+	background: #fee2e2;
+	color: #ef4444;
+}
+
+.oiib-search-clear svg {
+	width: 16px;
+	height: 16px;
+}
+
+/* Collection Filter */
+.oiib-collection-filter {
+	padding: 12px 24px;
+	background: white;
+	border-bottom: 1px solid #e8ecef;
+	flex-shrink: 0;
+	/* overflow-x: auto; */
+	overflow-x: scroll;
+	overflow-y: hidden;
+	scrollbar-width: thin;
+}
+
+.oiib-collection-filter-wrapper {
+	display: flex;
+	gap: 8px;
+	min-width: min-content;
+}
+
+/* .oiib-collection-filter::-webkit-scrollbar {
+	height: 6px;
+}
+
+.oiib-collection-filter::-webkit-scrollbar-track {
+	background: #f8f9fa;
+}
+
+.oiib-collection-filter::-webkit-scrollbar-thumb {
+	background: #d1d5db;
+	border-radius: 3px;
+}
+
+.oiib-collection-filter::-webkit-scrollbar-thumb:hover {
+	background: #9ca3af;
+} */
+
+.oiib-collection-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 6px 14px;
+	background: #f3f4f6;
+	border: 2px solid #e5e7eb;
+	border-radius: 20px;
+	font-size: 13px;
+	font-weight: 600;
+	color: #6b7280;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.oiib-collection-chip[data-count="0"] {
+	opacity: 0.4;
+	cursor: not-allowed;
+}
+
+.oiib-collection-chip[data-count="0"]:hover {
+	background: #f3f4f6;
+	border-color: #e5e7eb;
+	color: #6b7280;
+}
+
+.oiib-collection-chip:hover {
+	background: #e5e7eb;
+	border-color: #d1d5db;
+	color: #374151;
+}
+
+.oiib-collection-chip.is-active {
+	background: var(--oiib-primary-color);
+	border-color: var(--oiib-primary-color);
+	color: white;
+	box-shadow: 0 2px 8px color-mix(in srgb, var(--oiib-primary-color) 30%, transparent);
+}
+
+.oiib-collection-chip.is-active:hover {
+	background: color-mix(in srgb, var(--oiib-primary-color) 90%, black);
+	border-color: color-mix(in srgb, var(--oiib-primary-color) 90%, black);
+}
+
+.oiib-collection-count {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 20px;
+	height: 18px;
+	padding: 0 6px;
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.oiib-collection-chip.is-active .oiib-collection-count {
+	background: rgba(255, 255, 255, 0.25);
+}
+
+/* Results Info */
+.oiib-icon-picker-info {
+	padding: 12px 24px;
+	background: #f8f9fa;
+	border-bottom: 1px solid #e8ecef;
+	flex-shrink: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+	min-height: 56px;
+}
+
+.oiib-info-text {
+	flex: 1;
+}
+
+.oiib-icon-picker-info p {
+	margin: 0;
+	font-size: 13px;
+	color: #6b7280;
+	font-weight: 500;
+}
+
+/* Pagination Controls */
+.oiib-pagination {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.oiib-pagination-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 32px;
+	height: 32px;
+	background: white;
+	border: 2px solid #e5e7eb;
+	border-radius: 8px;
+	font-size: 18px;
+	font-weight: 600;
+	color: #6b7280;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	padding: 0;
+}
+
+.oiib-pagination-btn:hover:not(:disabled) {
+	border-color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 5%, white);
+	color: var(--oiib-primary-color);
+}
+
+.oiib-pagination-btn:disabled {
+	opacity: 0.3;
+	cursor: not-allowed;
+	background: #f3f4f6;
+}
+
+.oiib-pagination-info {
+	font-size: 13px;
+	font-weight: 600;
+	color: #374151;
+	white-space: nowrap;
+	padding: 0 4px;
+}
+
+/* Content Wrapper - prevents blinking on state changes */
+.oiib-icon-picker-content-wrapper {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 420px;
+	overflow: hidden;
+}
+
+/* Loading State */
+.oiib-icon-picker-loading {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 60px 24px;
+	gap: 16px;
+	flex: 1;
+}
+
+.oiib-icon-picker-loading p {
+	margin: 0;
+	font-size: 14px;
+	color: #6b7280;
+}
+
+/* Error State */
+.oiib-icon-picker-error {
+	padding: 24px;
+	background: #fef2f2;
+	border: 1px solid #fecaca;
+	border-radius: 8px;
+	margin: 24px;
+}
+
+.oiib-icon-picker-error p {
+	margin: 0;
+	color: #dc2626;
+	font-size: 14px;
+}
+
+/* Icon Grid */
+.oiib-icon-picker-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	grid-auto-rows: min-content;
+	gap: 12px;
+	padding: 24px;
+	overflow-y: auto;
+	flex: 1 1 auto;
+	background: #fafbfc;
+	min-height: 0;
+	max-height: 100%;
+
+	/* Custom Scrollbar */
+	scrollbar-width: thin;
+	scrollbar-color: #d1d5db #f1f3f5;
+}
+
+/* .oiib-icon-picker-grid::-webkit-scrollbar {
+	width: 8px !important;
+}
+
+.oiib-icon-picker-grid::-webkit-scrollbar-track {
+	background: #f1f3f5;
+}
+
+.oiib-icon-picker-grid::-webkit-scrollbar-thumb {
+	background: #d1d5db;
+	border-radius: 4px !important;
+}
+
+.oiib-icon-picker-grid::-webkit-scrollbar-thumb:hover {
+	background: #9ca3af;
+} */
+
+/* Icon Item */
+.oiib-icon-item {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 16px 12px;
+	background: white;
+	border: 2px solid #e5e7eb;
+	border-radius: 10px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	text-align: center;
+}
+
+.oiib-icon-item:hover {
+	border-color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 5%, white);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px color-mix(in srgb, var(--oiib-primary-color) 15%, transparent);
+}
+
+.oiib-icon-item.is-selected {
+	border-color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 10%, white);
+	box-shadow: 0 0 0 3px color-mix(in srgb, var(--oiib-primary-color) 20%, transparent);
+}
+
+.oiib-icon-item.is-focused {
+	border-color: var(--oiib-primary-color);
+	background: color-mix(in srgb, var(--oiib-primary-color) 8%, white);
+	outline: 2px solid var(--oiib-primary-color);
+	outline-offset: 2px;
+	box-shadow: 0 0 0 4px color-mix(in srgb, var(--oiib-primary-color) 15%, transparent);
+}
+
+.oiib-icon-preview {
+	width: 48px;
+	height: 48px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 8px;
+	background: #f8f9fa;
+	padding: 8px;
+}
+
+.oiib-icon-item:hover .oiib-icon-preview {
+	background: white;
+}
+
+.oiib-icon-selected-badge {
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	width: 24px;
+	height: 24px;
+	background: var(--oiib-primary-color);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 0 2px 8px color-mix(in srgb, var(--oiib-primary-color) 40%, transparent);
+	border: 3px solid white;
+	z-index: 10;
+}
+
+.oiib-icon-selected-badge svg {
+	width: 12px;
+	height: 12px;
+	color: white;
+}
+
+.oiib-icon-label {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	max-width: 100%;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.oiib-icon-name {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1f2937;
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+	white-space: nowrap;
+	display: inline-block;
+	transition: transform 0.3s ease;
+	--scroll-distance: 0px;
+	--scroll-duration: 3s;
+}
+
+/* Show ellipsis when not hovering the grid item */
+.oiib-icon-item:not(:hover) .oiib-icon-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	max-width: 100%;
+}
+
+/* Scrolling animation for overflowing text when hovering the grid item */
+.oiib-icon-item:hover .oiib-icon-name.is-overflowing {
+	animation: scroll-text-marquee var(--scroll-duration) linear forwards;
+}
+
+@keyframes scroll-text-marquee {
+	0%, 15% {
+		transform: translateX(0);
+	}
+	85%, 100% {
+		transform: translateX(var(--scroll-distance));
+	}
+}
+
+.oiib-icon-prefix {
+	font-size: 10px;
+	font-weight: 600;
+	text-transform: uppercase;
+	color: #9ca3af;
+	letter-spacing: 0.5px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.oiib-icon-item:hover .oiib-icon-prefix {
+	color: var(--oiib-primary-color);
+}
+
+/* Empty State */
+.oiib-icon-picker-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 60px 24px;
+	gap: 16px;
+	flex: 1;
+	text-align: center;
+}
+
+.oiib-icon-picker-empty svg {
+	color: #d1d5db;
+}
+
+.oiib-icon-picker-empty h3 {
+	margin: 0;
+	font-size: 18px;
+	font-weight: 700;
+	color: #1f2937;
+}
+
+.oiib-icon-picker-empty p {
+	margin: 0;
+	font-size: 14px;
+	color: #6b7280;
+	max-width: 420px;
+}
+
+/* ========================================
+    Confirmation Footer
+   ======================================== */
+.oiib-icon-picker-footer {
+	background: white;
+	border-top: 2px solid #e8ecef;
+	padding: 16px 24px;
+	flex-shrink: 0;
+	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.oiib-selected-icon-preview {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.oiib-selected-icon-display {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	flex: 1;
+	min-width: 0;
+}
+
+.oiib-selected-icon-display omni-icon {
+	flex-shrink: 0;
+	padding: 8px;
+	background: color-mix(in srgb, var(--oiib-primary-color) 10%, white);
+	border-radius: 8px;
+	border: 2px solid var(--oiib-primary-color);
+}
+
+.oiib-selected-icon-info {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.oiib-selected-icon-label {
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	color: #6b7280;
+	letter-spacing: 0.5px;
+}
+
+.oiib-selected-icon-name {
+	font-size: 14px;
+	font-weight: 600;
+	color: var(--oiib-primary-color);
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.oiib-confirmation-buttons {
+	display: flex;
+	gap: 8px;
+	flex-shrink: 0;
+}
+
+.oiib-btn {
+	padding: 10px 20px;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	border: 2px solid transparent;
+	white-space: nowrap;
+}
+
+.oiib-btn-secondary {
+	background: #f3f4f6;
+	color: #374151;
+	border-color: #e5e7eb;
+}
+
+.oiib-btn-secondary:hover {
+	background: #e5e7eb;
+	border-color: #d1d5db;
+	color: #1f2937;
+}
+
+.oiib-btn-primary {
+	background: var(--oiib-primary-color);
+	color: white;
+	border-color: var(--oiib-primary-color);
+	box-shadow: 0 2px 4px color-mix(in srgb, var(--oiib-primary-color) 30%, transparent);
+}
+
+.oiib-btn-primary:hover {
+	background: color-mix(in srgb, var(--oiib-primary-color) 90%, black);
+	border-color: color-mix(in srgb, var(--oiib-primary-color) 90%, black);
+	box-shadow: 0 4px 8px color-mix(in srgb, var(--oiib-primary-color) 40%, transparent);
+	transform: translateY(-1px);
+}
+
+.oiib-btn-primary:active {
+	transform: translateY(0);
+}
+

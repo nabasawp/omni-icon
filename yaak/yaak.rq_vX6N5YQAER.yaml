@@ -1,0 +1,22 @@
+type: http_request
+model: http_request
+id: rq_vX6N5YQAER
+createdAt: 2025-11-28T06:28:26.819531
+updatedAt: 2025-11-28T12:26:59.420101
+workspaceId: wk_PJP8ubThP7
+folderId: fl_eu4gmehBNd
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Search
+sortPriority: 5000.0
+url: ${[ WP_URL ]}/omni-icon/v1/icon/search
+urlParameters:
+- enabled: true
+  name: query
+  value: apple
+  id: GbF9rTGf27

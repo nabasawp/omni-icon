@@ -1,0 +1,18 @@
+type: environment
+model: environment
+id: ev_9W3i2zYRtm
+workspaceId: wk_PJP8ubThP7
+createdAt: 2025-11-28T08:20:14.047719
+updatedAt: 2025-11-28T08:24:02.698004
+name: Dev
+public: true
+base: false
+parentModel: environment
+parentId: null
+variables:
+- enabled: true
+  name: WP_URL
+  value: http://wordpress.localhost/wp-json
+  id: 6TsNDFg9Yz
+color: '#aa47df'
+sortPriority: 0.0

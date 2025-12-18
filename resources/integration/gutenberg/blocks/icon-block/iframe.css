@@ -1,0 +1,115 @@
+/* Base Color Variables */
+:root {
+	--oiib-primary-color: var(--wp-components-color-accent, var(--wp-admin-theme-color, #3858e9));
+}
+
+/* ========================================
+    Block Placeholder
+   ======================================== */
+.oiib-placeholder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+	padding: 48px 32px;
+	text-align: center;
+	background: linear-gradient(135deg, 
+		color-mix(in srgb, var(--oiib-primary-color) 5%, white) 0%, 
+		color-mix(in srgb, var(--oiib-primary-color) 2%, white) 100%);
+	border: 2px dashed color-mix(in srgb, var(--oiib-primary-color) 25%, transparent);
+	border-radius: 16px;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	min-height: 240px;
+	justify-content: center;
+}
+
+.oiib-placeholder:hover {
+	background: linear-gradient(135deg, 
+		color-mix(in srgb, var(--oiib-primary-color) 10%, white) 0%, 
+		color-mix(in srgb, var(--oiib-primary-color) 5%, white) 100%);
+	border-color: color-mix(in srgb, var(--oiib-primary-color) 50%, transparent);
+	box-shadow: 0 8px 24px color-mix(in srgb, var(--oiib-primary-color) 10%, transparent);
+	transform: translateY(-2px);
+}
+
+.oiib-placeholder-icon {
+	width: 72px;
+	height: 72px;
+	background: white;
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	box-shadow: 
+		0 4px 16px color-mix(in srgb, var(--oiib-primary-color) 15%, transparent),
+		0 0 0 1px color-mix(in srgb, var(--oiib-primary-color) 10%, transparent);
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.oiib-placeholder:hover .oiib-placeholder-icon {
+	transform: scale(1.05) rotate(3deg);
+	box-shadow: 
+		0 8px 24px color-mix(in srgb, var(--oiib-primary-color) 25%, transparent),
+		0 0 0 1px color-mix(in srgb, var(--oiib-primary-color) 20%, transparent);
+}
+
+.oiib-placeholder-icon svg {
+	width: 40px;
+	height: 40px;
+	color: var(--oiib-primary-color);
+	filter: drop-shadow(0 2px 4px color-mix(in srgb, var(--oiib-primary-color) 20%, transparent));
+}
+
+.oiib-placeholder-content {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	max-width: 400px;
+}
+
+.oiib-placeholder h4 {
+	margin: 0;
+	font-size: 20px;
+	font-weight: 700;
+	color: #1f2937;
+	letter-spacing: -0.02em;
+}
+
+.oiib-placeholder p {
+	margin: 0;
+	color: #6b7280;
+	font-size: 14px;
+	line-height: 1.5;
+}
+
+.oiib-placeholder-footer {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 4px;
+}
+
+.oiib-placeholder-hint {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 12px;
+	color: #9ca3af;
+	font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+	background: white;
+	padding: 8px 14px;
+	border-radius: 8px;
+	border: 1px solid color-mix(in srgb, var(--oiib-primary-color) 15%, transparent);
+	box-shadow: 0 2px 4px color-mix(in srgb, var(--oiib-primary-color) 5%, transparent);
+	transition: all 0.2s ease;
+}
+
+.oiib-placeholder:hover .oiib-placeholder-hint {
+	border-color: color-mix(in srgb, var(--oiib-primary-color) 30%, transparent);
+	color: var(--oiib-primary-color);
+}
+
+.oiib-placeholder-hint svg {
+	flex-shrink: 0;
+	color: var(--oiib-primary-color);
+}

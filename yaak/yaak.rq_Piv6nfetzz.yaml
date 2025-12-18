@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_Piv6nfetzz
+createdAt: 2025-11-28T12:02:21.143429
+updatedAt: 2025-11-28T12:18:38.576780
+workspaceId: wk_PJP8ubThP7
+folderId: fl_eu4gmehBNd
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Single Svg - OK
+sortPriority: 3000.0
+url: ${[ WP_URL ]}/omni-icon/v1/icon/item/tabler/home.svg
+urlParameters: []

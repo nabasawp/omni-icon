@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_bPv2XmpFKW
+createdAt: 2025-11-28T10:42:05.198103
+updatedAt: 2025-11-28T12:22:23.565968
+workspaceId: wk_PJP8ubThP7
+folderId: fl_eu4gmehBNd
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Single Item - OK
+sortPriority: 1000.0
+url: ${[ WP_URL ]}/omni-icon/v1/icon/item/local/windpress
+urlParameters: []

@@ -1,0 +1,18 @@
+type: http_request
+model: http_request
+id: rq_NuaFDfATGr
+createdAt: 2025-11-28T10:56:41.773479
+updatedAt: 2025-11-28T20:49:00.498498
+workspaceId: wk_PJP8ubThP7
+folderId: fl_eu4gmehBNd
+authentication: {}
+authenticationType: null
+body: {}
+bodyType: null
+description: ''
+headers: []
+method: GET
+name: Single Item - OK
+sortPriority: 2000.0
+url: ${[ WP_URL ]}/omni-icon/v1/icon/item/tabler/brand-facebook
+urlParameters: []

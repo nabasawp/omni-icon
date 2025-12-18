@@ -1,0 +1,381 @@
+import { Modal, Spinner } from '@wordpress/components';
+import { useState, useCallback, useMemo, useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+import IconSearch from '~icons/tabler/search';
+import IconX from '~icons/tabler/x';
+import IconChevronLeft from '~icons/tabler/chevron-left';
+import IconChevronRight from '~icons/tabler/chevron-right';
+
+// Import custom hooks
+import {
+	useDebounce,
+	useIconCollections,
+	useIconSearch,
+	useDefaultIcons,
+	useIconFiltering,
+	useKeyboardNavigation,
+} from './hooks';
+
+// Import IconItem component
+import IconItem from './IconItem';
+
+const ICONS_PER_PAGE = 64;
+
+const IconPickerModal = ({ isOpen, onClose, onSelectIcon, currentIcon }) => {
+	// Search state
+	const [searchQuery, setSearchQuery] = useState('');
+	const debouncedSearchQuery = useDebounce(searchQuery, 300);
+	
+	// Collection filter state
+	const [selectedCollection, setSelectedCollection] = useState('all');
+	
+	// Temporary selection state (before confirmation)
+	const [tempSelectedIcon, setTempSelectedIcon] = useState(currentIcon || null);
+	
+	// Fetch collections
+	const { collections, isLoading: isLoadingCollections, error: collectionsError } = useIconCollections(isOpen);
+	
+	// Search icons or use default
+	const { icons: searchResults, isLoading: isSearching, error: searchError } = useIconSearch(debouncedSearchQuery, isOpen);
+	
+	// Generate default icons from collections
+	const defaultIcons = useDefaultIcons(collections, currentIcon);
+	
+	// Determine which icons to display (search results or default)
+	const allIcons = useMemo(() => {
+		return debouncedSearchQuery.trim() ? searchResults : defaultIcons;
+	}, [debouncedSearchQuery, searchResults, defaultIcons]);
+	
+	// Filter and paginate icons
+	const {
+		paginatedIcons,
+		totalPages,
+		currentPage,
+		setCurrentPage,
+		collectionCounts,
+	} = useIconFiltering(allIcons, selectedCollection, ICONS_PER_PAGE);
+	
+	// Determine loading state
+	const isLoading = isLoadingCollections || isSearching;
+	const error = collectionsError || searchError;
+	
+	// Memoized callbacks
+	const handleSelectIcon = useCallback((iconName) => {
+		// Toggle selection: if clicking the same icon, deselect it
+		setTempSelectedIcon(prevIcon => prevIcon === iconName ? null : iconName);
+	}, []);
+	
+	const handleConfirmSelection = useCallback(() => {
+		// Allow confirming with null to clear the icon
+		onSelectIcon(tempSelectedIcon || '');
+		onClose();
+	}, [tempSelectedIcon, onSelectIcon, onClose]);
+	
+	const handleCancelSelection = useCallback(() => {
+		onClose();
+	}, [onClose]);
+	
+	// Keyboard navigation
+	const { selectedIndex, handleKeyDown: baseHandleKeyDown, gridRef } = useKeyboardNavigation(
+		paginatedIcons,
+		handleSelectIcon,
+		handleCancelSelection,
+		isOpen
+	);
+	
+	// Wrap keyboard handler to add Ctrl+Enter for confirm
+	const handleKeyDown = useCallback((event) => {
+		// Ctrl/Cmd + Enter to confirm selection
+		if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+			event.preventDefault();
+			handleConfirmSelection();
+			return;
+		}
+		
+		// Pass to base handler
+		baseHandleKeyDown(event);
+	}, [baseHandleKeyDown, handleConfirmSelection]);
+	
+	const handleClearSearch = useCallback(() => {
+		setSearchQuery('');
+	}, []);
+	
+	const handleCollectionFilter = useCallback((collectionPrefix) => {
+		setSelectedCollection(collectionPrefix);
+	}, []);
+	
+	const handlePageChange = useCallback((newPage) => {
+		if (newPage < 1 || newPage > totalPages) return;
+		setCurrentPage(newPage);
+	}, [totalPages, setCurrentPage]);
+	
+	const handlePrevPage = useCallback(() => {
+		if (currentPage > 1) {
+			handlePageChange(currentPage - 1);
+		}
+	}, [currentPage, handlePageChange]);
+	
+	const handleNextPage = useCallback(() => {
+		if (currentPage < totalPages) {
+			handlePageChange(currentPage + 1);
+		}
+	}, [currentPage, totalPages, handlePageChange]);
+	
+	// Calculate total count for current filter
+	const totalCount = useMemo(() => {
+		if (selectedCollection === 'all') {
+			return allIcons.length;
+		}
+		return allIcons.filter(icon => icon.prefix === selectedCollection).length;
+	}, [allIcons, selectedCollection]);
+	
+	// Reset search when modal closes/opens
+	useEffect(() => {
+		if (isOpen) {
+			setTempSelectedIcon(currentIcon || null);
+		} else {
+			setSearchQuery('');
+			setSelectedCollection('all');
+			setTempSelectedIcon(null);
+		}
+	}, [isOpen, currentIcon]);
+	
+	// Info message
+	const infoMessage = useMemo(() => {
+		// Show searching message when loading
+		if (isLoading) {
+			if (searchQuery) {
+				const collectionName = selectedCollection === 'all' 
+					? '' 
+					: ` in ${collections[selectedCollection]?.name || selectedCollection}`;
+				return __(`Searching for "${searchQuery}"${collectionName}...`, 'omni-icon');
+			}
+			return __('Loading icons...', 'omni-icon');
+		}
+		
+		if (debouncedSearchQuery) {
+			const collectionName = selectedCollection === 'all' 
+				? '' 
+				: ` in ${collections[selectedCollection]?.name || selectedCollection}`;
+			
+			return totalCount > 0
+				? __(`Found ${totalCount} icons for "${debouncedSearchQuery}"${collectionName}`, 'omni-icon')
+				: __(`No icons found for "${debouncedSearchQuery}"${collectionName}`, 'omni-icon');
+		}
+		
+		return selectedCollection === 'all'
+			? __('Showing sample icons from all collections', 'omni-icon')
+			: __(`Showing sample icons from ${collections[selectedCollection]?.name || selectedCollection}`, 'omni-icon');
+	}, [isLoading, searchQuery, debouncedSearchQuery, selectedCollection, totalCount, collections]);
+
+	return (
+		<>
+			{isOpen && (
+				<Modal
+					title={__('Omni Icon — Icon Picker', 'omni-icon')}
+					onRequestClose={onClose}
+					className="oiib-icon-picker-modal"
+					size="large"
+					onKeyDown={handleKeyDown}
+					aria-label={__('Icon Picker', 'omni-icon')}
+				>
+					<div className="oiib-icon-picker-content">
+						{/* Search Bar */}
+						<div className="oiib-icon-picker-search">
+							<div className="oiib-search-wrapper">
+								<IconSearch className="oiib-search-icon" aria-hidden="true" />
+								<input
+									type="text"
+									className="oiib-search-input"
+									value={searchQuery}
+									onChange={(e) => setSearchQuery(e.target.value)}
+									placeholder={__('Search icons... (e.g., home, mdi:heart, lucide:star)', 'omni-icon')}
+									autoFocus
+									aria-label={__('Search icons', 'omni-icon')}
+								/>
+								{searchQuery && (
+									<button
+										className="oiib-search-clear"
+										onClick={handleClearSearch}
+										aria-label={__('Clear search', 'omni-icon')}
+									>
+										<IconX />
+									</button>
+								)}
+							</div>
+						</div>
+
+						{/* Collection Filter */}
+						{Object.keys(collections).length > 0 && (
+							<div className="oiib-collection-filter" role="tablist" aria-label={__('Filter by collection', 'omni-icon')}>
+								<div className="oiib-collection-filter-wrapper">
+									<button
+										className={`oiib-collection-chip ${selectedCollection === 'all' ? 'is-active' : ''}`}
+										onClick={() => handleCollectionFilter('all')}
+										role="tab"
+										aria-selected={selectedCollection === 'all'}
+										aria-label={__('All collections', 'omni-icon')}
+									>
+										{__('All', 'omni-icon')}
+										<span className="oiib-collection-count" aria-label={`${allIcons.length} icons`}>
+											{allIcons.length}
+										</span>
+									</button>
+									{Object.entries(collections).map(([prefix, collection]) => {
+										const count = collectionCounts[prefix] || 0;
+										// Hide collections with 0 results when searching
+										if (debouncedSearchQuery && count === 0) {
+											return null;
+										}
+										return (
+											<button
+												key={prefix}
+												className={`oiib-collection-chip ${selectedCollection === prefix ? 'is-active' : ''}`}
+												onClick={() => handleCollectionFilter(prefix)}
+												title={collection.name}
+												data-count={count}
+												role="tab"
+												aria-selected={selectedCollection === prefix}
+												aria-label={`${collection.name || prefix}, ${count} icons`}
+											>
+												{collection.name || prefix}
+												<span className="oiib-collection-count">
+													{count}
+												</span>
+											</button>
+										);
+									})}
+								</div>
+							</div>
+						)}
+
+					{/* Results Info with Pagination */}
+					<div className="oiib-icon-picker-info">
+						<div className="oiib-info-text">
+							<p>{infoMessage}</p>
+						</div>
+						
+						{/* Pagination Controls */}
+						{!isLoading && debouncedSearchQuery && totalPages > 1 && (
+							<div className="oiib-pagination" role="navigation" aria-label={__('Icon pagination', 'omni-icon')}>
+								<button
+									className="oiib-pagination-btn"
+									onClick={handlePrevPage}
+									disabled={currentPage === 1}
+									aria-label={__('Previous page', 'omni-icon')}
+								>
+									<IconChevronLeft />
+								</button>
+								<span className="oiib-pagination-info" aria-live="polite">
+									{__(`Page ${currentPage} of ${totalPages}`, 'omni-icon')}
+								</span>
+								<button
+									className="oiib-pagination-btn"
+									onClick={handleNextPage}
+									disabled={currentPage === totalPages}
+									aria-label={__('Next page', 'omni-icon')}
+								>
+									<IconChevronRight />
+								</button>
+							</div>
+						)}
+					</div>
+
+					{/* Content Wrapper - prevents blinking on state changes */}
+					<div className="oiib-icon-picker-content-wrapper">
+						{/* Loading State */}
+						{isLoading && (
+							<div className="oiib-icon-picker-loading" role="status" aria-live="polite">
+								<Spinner />
+								<p>{__('Loading icons...', 'omni-icon')}</p>
+							</div>
+						)}
+
+						{/* Error State */}
+						{error && (
+							<div className="oiib-icon-picker-error" role="alert">
+								<p>{error}</p>
+							</div>
+						)}
+
+						{/* Icon Grid */}
+						{!isLoading && !error && paginatedIcons.length > 0 && (
+							<div 
+								className="oiib-icon-picker-grid" 
+								ref={gridRef}
+								role="grid"
+								aria-label={__('Icon grid', 'omni-icon')}
+							>
+								{paginatedIcons.map((icon, index) => (
+									<IconItem
+										key={icon.name}
+										icon={icon}
+										isSelected={icon.name === tempSelectedIcon}
+										isFocused={index === selectedIndex}
+										onSelect={handleSelectIcon}
+										index={index}
+									/>
+								))}
+							</div>
+						)}
+
+						{/* Empty State */}
+						{!isLoading && !error && paginatedIcons.length === 0 && debouncedSearchQuery && (
+							<div className="oiib-icon-picker-empty" role="status">
+								<IconSearch style={{ width: '48px', height: '48px' }} aria-hidden="true" />
+								<h3>{__('No icons found', 'omni-icon')}</h3>
+								<p>{__('Try a different search term or icon prefix', 'omni-icon')}</p>
+							</div>
+						)}
+					</div>
+
+					{/* Confirmation Footer */}
+					{tempSelectedIcon !== currentIcon && (
+						<div className="oiib-icon-picker-footer">
+							<div className="oiib-selected-icon-preview">
+								{tempSelectedIcon ? (
+									<div className="oiib-selected-icon-display">
+										<omni-icon
+											name={tempSelectedIcon}
+											width="32"
+											height="32"
+										/>
+										<div className="oiib-selected-icon-info">
+											<span className="oiib-selected-icon-label">{__('Selected:', 'omni-icon')}</span>
+											<span className="oiib-selected-icon-name">{tempSelectedIcon}</span>
+										</div>
+									</div>
+								) : (
+									<div className="oiib-selected-icon-display">
+										<div className="oiib-selected-icon-info">
+											<span className="oiib-selected-icon-label">{__('Icon will be removed', 'omni-icon')}</span>
+										</div>
+									</div>
+								)}
+								<div className="oiib-confirmation-buttons">
+									<button
+										className="oiib-btn oiib-btn-secondary"
+										onClick={handleCancelSelection}
+										aria-label={__('Cancel', 'omni-icon')}
+									>
+										{__('Cancel', 'omni-icon')}
+									</button>
+									<button
+										className="oiib-btn oiib-btn-primary"
+										onClick={handleConfirmSelection}
+										aria-label={__('Confirm selection', 'omni-icon')}
+									>
+										{__('Confirm', 'omni-icon')}
+									</button>
+								</div>
+							</div>
+						</div>
+					)}
+				</div>
+				</Modal>
+			)}
+		</>
+	);
+};
+
+export default IconPickerModal;

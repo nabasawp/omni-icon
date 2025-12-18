@@ -1,0 +1,104 @@
+/* ===============================
+	LiveCanvas Editor Styles
+   ======================================== */
+
+/* Icon Picker Button in LiveCanvas Panel */
+section[item-type="omni-icon-panel"] {
+	.omni-icon-picker-button {
+		background-color: #0073aa;
+		color: #fff;
+		border: none;
+		padding: 8px 16px;
+		border-radius: 4px;
+		cursor: pointer;
+		font-size: 14px;
+		transition: background-color 0.2s ease;
+
+		&:hover {
+			background-color: #005a87;
+		}
+
+		&:active {
+			background-color: #004a6f;
+		}
+	}
+}
+
+/* ========================================
+	Icon Picker Modal
+   ======================================== */
+
+.components-modal__screen-overlay {
+	background-color: rgba(0, 0, 0, 0.6);
+	bottom: 0;
+	display: flex;
+	left: 0;
+	position: fixed;
+	right: 0;
+	top: 0;
+	z-index: 100000;
+}
+
+.oilc-icon-picker-modal {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+
+	max-width: 840px;
+	width: 100%;
+	border-radius: 8px;
+	margin: auto;
+	min-width: 350px;
+
+	background: #fff;
+	border-radius: 8px 8px 0 0;
+	box-shadow: 0 5px 15px #00000014, 0 15px 27px #00000012, 0 30px 36px #0000000a, 0 50px 43px #00000005;
+	color: #1e1e1e;
+	display: flex;
+	overflow: hidden;
+
+	* {
+		line-height: 1.4em;
+	}
+
+	.components-modal__header {
+		align-items: center;
+		box-sizing: border-box;
+		display: flex;
+		flex-direction: row;
+		height: 72px;
+		justify-content: space-between;
+		left: 0;
+		top: 0;
+		width: 100%;
+
+		.components-button {
+			&:hover {
+				color: #0073aa;
+			}
+
+			background: none;
+			border: 0;
+			cursor: pointer;
+			display: inline-flex;
+			font-family: inherit;
+			font-size: 13px;
+
+			svg {
+				fill: currentColor;
+				outline: none;
+			}
+		}
+	}
+
+	.oiib-icon-picker-content {
+		.oiib-search-wrapper input {
+			line-height: 2;
+			min-height: 30px;
+		}
+	}
+}
+
+/* Prevent body scrolling when modal is open */
+body.oilc-modal-open {
+	overflow: hidden;
+}

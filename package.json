@@ -1,0 +1,50 @@
+{
+  "name": "omni-icon",
+  "version": "1.0.0",
+  "description": "WordPress plugin for Iconify icon blocks in Gutenberg",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "wordpress",
+    "gutenberg",
+    "icons",
+    "iconify",
+    "blocks"
+  ],
+  "author": "Joshua Gugun Siagian",
+  "license": "GPL-2.0-or-later",
+  "devDependencies": {
+    "@iconify-json/tabler": "^1.2.23",
+    "@kucrut/vite-for-wp": "^0.12.0",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
+    "@vitejs/plugin-react": "^5.1.1",
+    "@vitejs/plugin-vue": "^6.0.2",
+    "@vitejs/plugin-vue-jsx": "^5.1.2",
+    "rollup-plugin-external-globals": "^0.13.0",
+    "sass-embedded": "^1.93.3",
+    "unplugin-icons": "^22.5.0",
+    "vite": "npm:rolldown-vite@^7.2.7",
+    "vite-plugin-external": "^6.2.2",
+    "vite-plugin-node-polyfills": "^0.24.0",
+    "vite-plugin-static-copy": "^3.1.4",
+    "vite-plugin-svgr": "^4.5.0"
+  },
+  "dependencies": {
+    "@floating-ui/dom": "^1.7.4",
+    "@wordpress/block-editor": "^15.8.0",
+    "@wordpress/blocks": "^15.8.0",
+    "@wordpress/components": "^30.8.0",
+    "@wordpress/element": "^6.35.0",
+    "@wordpress/i18n": "^6.8.0",
+    "idb-keyval": "^6.2.2",
+    "memfs": "^4.51.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "packageManager": "pnpm@10.24.0+sha512.01ff8ae71b4419903b65c60fb2dc9d34cf8bb6e06d03bde112ef38f7a34d6904c424ba66bea5cdcf12890230bf39f9580473140ed9c946fef328b6e5238a345a"
+}
