@@ -90,8 +90,6 @@ class BreakdanceService
                 continue;
             }
 
-            error_log('Breakdance enqueuing style: ' . $handle);
-
             $wp_styles->do_items($handle);
         }
     }

@@ -128,6 +128,17 @@ class LiveCanvasService
 
             $wp_scripts->do_items($handle);
         }
+
+        // Styles
+        $wp_styles = wp_styles();
+        $queue = $wp_styles->queue;
+        foreach ($queue as $handle) {
+            if (strpos($handle, OMNI_ICON::TEXT_DOMAIN . ':') !== 0) {
+                continue;
+            }
+
+            $wp_styles->do_items($handle);
+        }
     }
 
     /**
