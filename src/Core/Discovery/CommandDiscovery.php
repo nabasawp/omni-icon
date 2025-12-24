@@ -7,6 +7,8 @@ namespace OmniIcon\Core\Discovery;
 use OmniIcon\Core\Container\Container;
 use OmniIcon\Core\Container\DependencyResolver;
 use OmniIcon\Core\Discovery\Attributes\Command;
+use OmniIcon\Core\Logger\LogComponent;
+use OmniIcon\Core\Logger\LoggerService;
 use Throwable;
 use WP_CLI;
 
@@ -20,7 +22,8 @@ final class CommandDiscovery implements Discovery
     private readonly DependencyResolver $dependencyResolver;
 
     public function __construct(
-        private readonly Container $container
+        private readonly Container $container,
+        private readonly LoggerService $logger,
     ) {
         $this->discoveryItems = new DiscoveryItems();
         $this->dependencyResolver = new DependencyResolver($container);
@@ -131,7 +134,11 @@ final class CommandDiscovery implements Discovery
             try {
                 $instance = $this->dependencyResolver->instantiate($className);
             } catch (Throwable $e) {
-                error_log(sprintf('Failed to instantiate command class %s: %s', $className, $e->getMessage()));
+                $this->logger->error('Failed to instantiate command class', [
+                    'component' => LogComponent::COMMAND_DISCOVERY,
+                    'exception' => $e,
+                    'className' => $className,
+                ]);
                 return;
             }
         }

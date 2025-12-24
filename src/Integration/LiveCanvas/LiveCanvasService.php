@@ -38,7 +38,7 @@ class LiveCanvasService
             'block' => [
                 'name' => 'Omni Icon',
                 'icon_html' => '<i class="fa fa-star" aria-hidden="true"></i>',
-                'template_html' => '<omni-icon lc-helper="omni-icon"></omni-icon>'
+                'template_html' => '<omni-icon name="omni:livecanvas" lc-helper="omni-icon" width="50"></omni-icon>'
             ],
             'options' => ['insertAt' => ['after' => 'Icon']]
         ];

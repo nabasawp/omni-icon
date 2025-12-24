@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace OmniIcon\Services;
 
 use OmniIcon\Core\Discovery\Attributes\Service;
+use OmniIcon\Core\Logger\LogComponent;
+use OmniIcon\Core\Logger\LoggerService;
 use Symfony\UX\Icons\Exception\IconNotFoundException;
 use Symfony\UX\Icons\IconRegistryInterface;
 use Symfony\UX\Icons\Registry\ChainIconRegistry;
@@ -31,6 +33,7 @@ class IconService
         private readonly LocalIconService $localIconService,
         private readonly BundleIconService $bundleIconService,
         private readonly IconifyService $iconifyService,
+        private readonly LoggerService $logger,
     ) {
         // Chain registries: local icons take precedence over bundle icons, then on-demand icons
         $this->registry = new ChainIconRegistry([
@@ -65,16 +68,17 @@ class IconService
 
             return $icon->toHtml();
         } catch (IconNotFoundException $e) {
-            // Log error in debug mode
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("Icon Service: Icon not found - {$name}");
-            }
+            $this->logger->warning('Icon not found', [
+                'component' => LogComponent::ICON_SERVICE,
+                'icon' => $name,
+            ]);
             return null;
         } catch (\Exception $e) {
-            // Log other errors in debug mode
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log("Icon Service error: {$e->getMessage()}");
-            }
+            $this->logger->error('Failed to get icon', [
+                'component' => LogComponent::ICON_SERVICE,
+                'exception' => $e,
+                'icon' => $name,
+            ]);
             return null;
         }
     }

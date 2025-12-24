@@ -11,6 +11,8 @@ use OmniIcon\Core\Discovery\Discovery;
 use OmniIcon\Core\Discovery\DiscoveryItems;
 use OmniIcon\Core\Discovery\DiscoveryLocation;
 use OmniIcon\Core\Discovery\IsDiscovery;
+use OmniIcon\Core\Logger\LogComponent;
+use OmniIcon\Core\Logger\LoggerService;
 
 final class MigrationDiscovery implements Discovery
 {
@@ -20,7 +22,8 @@ final class MigrationDiscovery implements Discovery
     private static array $migrations = [];
 
     public function __construct(
-        private readonly Container $container
+        private readonly Container $container,
+        private readonly LoggerService $logger,
     ) {
         $this->discoveryItems = new DiscoveryItems();
     }
@@ -40,10 +43,10 @@ final class MigrationDiscovery implements Discovery
         
         // Check if class implements MigrationInterface
         if (! class_exists($className) || ! is_subclass_of($className, MigrationInterface::class)) {
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log(sprintf("OmniIcon Migration Warning: %s has Migration attribute but doesn't implement MigrationInterface", $className));
-            }
-
+            $this->logger->warning("Class has Migration attribute but doesn't implement MigrationInterface", [
+                'component' => LogComponent::MIGRATION_DISCOVERY,
+                'className' => $className,
+            ]);
             return;
         }
         

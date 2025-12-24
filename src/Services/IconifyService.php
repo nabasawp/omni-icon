@@ -6,6 +6,8 @@ namespace OmniIcon\Services;
 
 use OMNI_ICON;
 use OmniIcon\Core\Discovery\Attributes\Service;
+use OmniIcon\Core\Logger\LogComponent;
+use OmniIcon\Core\Logger\LoggerService;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\UX\Icons\Iconify as UXIconify;
 use Symfony\UX\Icons\IconRegistryInterface;
@@ -22,8 +24,9 @@ class IconifyService
     private readonly UXIconify $iconify;
     private readonly FilesystemAdapter $searchCache;
 
-    public function __construct()
-    {
+    public function __construct(
+        private readonly LoggerService $logger,
+    ) {
         // Initialize Symfony cache adapter for icon metadata
         $cache = new FilesystemAdapter('iconify', 0, wp_upload_dir()['basedir'] . OMNI_ICON::CACHE_DIR . 'iconify');
 
@@ -136,10 +139,12 @@ class IconifyService
 
             $result = $response->toArray();
         } catch (\Exception $e) {
-            // Log error in debug mode
-            if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('Iconify search error: ' . $e->getMessage());
-            }
+            $this->logger->error('Iconify search error', [
+                'component' => LogComponent::ICONIFY_SERVICE,
+                'exception' => $e,
+                'prefix' => $prefix,
+                'query' => $query,
+            ]);
             
             // Fallback to default method if reflection fails
             $fallbackResult = $this->iconify->searchIcons($prefix, $query);
