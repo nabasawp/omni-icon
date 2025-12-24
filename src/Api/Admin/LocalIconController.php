@@ -66,6 +66,160 @@ final readonly class LocalIconController
     }
 
     /**
+     * Get all icon sets with metadata
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/sets', 'GET', permission_callback: 'manage_options')]
+    public function get_icon_sets(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $sets = $this->localIconService->get_icon_sets();
+        
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => $sets,
+        ]);
+    }
+
+    /**
+     * Get all icons from a specific set
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/sets/(?P<icon_set>[a-zA-Z0-9_-]+)/icons', 'GET', permission_callback: 'manage_options')]
+    public function get_icons_by_set(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $icon_set = $request->get_param('icon_set');
+        
+        // "local" set is for root directory (pass null)
+        $icon_set_param = $icon_set === 'local' ? null : $icon_set;
+        
+        $icons = $this->localIconService->get_icons_by_set($icon_set_param);
+        
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => $icons,
+        ]);
+    }
+
+    /**
+     * Get all local icons
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/icons', 'GET', permission_callback: 'manage_options')]
+    public function get_all_icons(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $icons = $this->localIconService->get_all_icons();
+        
+        return new WP_REST_Response([
+            'success' => true,
+            'data' => $icons,
+        ]);
+    }
+
+    /**
+     * Move icon to a different set
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/move', 'POST', permission_callback: 'manage_options')]
+    public function move_icon(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $icon_name = $request->get_param('icon_name');
+        $target_set = $request->get_param('target_set');
+
+        if (empty($icon_name)) {
+            return new WP_Error(
+                'missing_icon_name',
+                __('Icon name is required', 'omni-icon'),
+                ['status' => 400]
+            );
+        }
+
+        $result = $this->localIconService->move_icon($icon_name, $target_set);
+
+        if (!$result['success']) {
+            return new WP_Error(
+                'move_failed',
+                $result['message'],
+                ['status' => 400]
+            );
+        }
+
+        return new WP_REST_Response($result);
+    }
+
+    /**
+     * Create a new icon set
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/sets/create', 'POST', permission_callback: 'manage_options')]
+    public function create_set(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $set_name = $request->get_param('set_name');
+
+        if (empty($set_name)) {
+            return new WP_Error(
+                'missing_set_name',
+                __('Set name is required', 'omni-icon'),
+                ['status' => 400]
+            );
+        }
+
+        $result = $this->localIconService->create_set($set_name);
+
+        if (!$result['success']) {
+            return new WP_Error(
+                'create_failed',
+                $result['message'],
+                ['status' => 400]
+            );
+        }
+
+        return new WP_REST_Response($result);
+    }
+
+    /**
+     * Rename an icon set
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/sets/(?P<set_name>[a-zA-Z0-9_-]+)/rename', 'POST', permission_callback: 'manage_options')]
+    public function rename_set(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $old_name = $request->get_param('set_name');
+        $new_name = $request->get_param('new_name');
+
+        if (empty($new_name)) {
+            return new WP_Error(
+                'missing_new_name',
+                __('New name is required', 'omni-icon'),
+                ['status' => 400]
+            );
+        }
+
+        $result = $this->localIconService->rename_set($old_name, $new_name);
+
+        if (!$result['success']) {
+            return new WP_Error(
+                'rename_failed',
+                $result['message'],
+                ['status' => 400]
+            );
+        }
+
+        return new WP_REST_Response($result);
+    }
+
+    /**
      * Delete a custom icon
      *
      * @param WP_REST_Request $request
@@ -93,5 +247,22 @@ final readonly class LocalIconController
         }
 
         return new WP_REST_Response($result);
+    }
+
+    /**
+     * Validate icon name format
+     */
+    public static function validateIconName($param, $request, $key): bool
+    {
+        // Icon name should be in format "prefix:name" or just "name"
+        return is_string($param) && preg_match('/^[a-zA-Z0-9:_-]+$/', $param);
+    }
+
+    /**
+     * Sanitize icon name
+     */
+    public static function sanitizeIconName($param, $request, $key): string
+    {
+        return sanitize_text_field($param);
     }
 }

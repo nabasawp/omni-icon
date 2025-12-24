@@ -613,6 +613,204 @@ class LocalIconService
     }
 
     /**
+     * Move icon to a different set
+     *
+     * @param string $icon_name Icon name in format "prefix:name"
+     * @param string|null $target_set Target set name (null for "local" set)
+     * @return array{success: bool, message: string}
+     */
+    public function move_icon(string $icon_name, ?string $target_set): array
+    {
+        // Parse icon name
+        if (str_contains($icon_name, ':')) {
+            [$prefix, $name] = explode(':', $icon_name, 2);
+        } else {
+            $prefix = 'local';
+            $name = $icon_name;
+        }
+
+        // Determine source file path
+        $filename = $name . '.svg';
+        if ($prefix === 'local') {
+            $source_path = $this->upload_dir . '/' . $filename;
+        } else {
+            $source_path = $this->upload_dir . '/' . $prefix . '/' . $filename;
+        }
+
+        if (!file_exists($source_path)) {
+            return [
+                'success' => false,
+                'message' => __('Icon not found', 'omni-icon'),
+            ];
+        }
+
+        // Determine target directory
+        if ($target_set === null || $target_set === '' || $target_set === 'local') {
+            $target_dir = $this->upload_dir;
+            $new_prefix = 'local';
+        } else {
+            $target_set = $this->sanitize_icon_set_name($target_set);
+            $target_dir = $this->upload_dir . '/' . $target_set;
+            $new_prefix = $target_set;
+            $this->ensure_directory_exists($target_dir);
+        }
+
+        // Check if already in target set
+        if ($prefix === $new_prefix) {
+            return [
+                'success' => false,
+                'message' => __('Icon is already in this set', 'omni-icon'),
+            ];
+        }
+
+        $target_path = $target_dir . '/' . $filename;
+
+        // Check if target already exists
+        if (file_exists($target_path)) {
+            return [
+                'success' => false,
+                'message' => __('An icon with this name already exists in the target set', 'omni-icon'),
+            ];
+        }
+
+        // Move file
+        if (!rename($source_path, $target_path)) {
+            return [
+                'success' => false,
+                'message' => __('Failed to move icon', 'omni-icon'),
+            ];
+        }
+
+        // Clear cache after successful move
+        $this->clear_cache();
+
+        return [
+            'success' => true,
+            'message' => __('Icon moved successfully', 'omni-icon'),
+        ];
+    }
+
+    /**
+     * Create a new icon set (directory)
+     *
+     * @param string $set_name Set name
+     * @return array{success: bool, message: string}
+     */
+    public function create_set(string $set_name): array
+    {
+        // Sanitize name
+        $set_name = $this->sanitize_icon_set_name($set_name);
+
+        if (empty($set_name)) {
+            return [
+                'success' => false,
+                'message' => __('Invalid set name', 'omni-icon'),
+            ];
+        }
+
+        if ($set_name === 'local') {
+            return [
+                'success' => false,
+                'message' => __('Cannot use "local" as a set name', 'omni-icon'),
+            ];
+        }
+
+        $set_dir = $this->upload_dir . '/' . $set_name;
+
+        if (file_exists($set_dir)) {
+            return [
+                'success' => false,
+                'message' => __('A set with this name already exists', 'omni-icon'),
+            ];
+        }
+
+        // Create directory
+        if (!wp_mkdir_p($set_dir)) {
+            return [
+                'success' => false,
+                'message' => __('Failed to create icon set directory', 'omni-icon'),
+            ];
+        }
+
+        // Clear cache after successful creation
+        $this->clear_cache();
+
+        return [
+            'success' => true,
+            'message' => __('Icon set created successfully', 'omni-icon'),
+        ];
+    }
+
+    /**
+     * Rename an icon set (directory)
+     *
+     * @param string $old_name Current set name
+     * @param string $new_name New set name
+     * @return array{success: bool, message: string}
+     */
+    public function rename_set(string $old_name, string $new_name): array
+    {
+        // Cannot rename the "local" set
+        if ($old_name === 'local') {
+            return [
+                'success' => false,
+                'message' => __('Cannot rename the default "local" set', 'omni-icon'),
+            ];
+        }
+
+        // Sanitize names
+        $old_name = $this->sanitize_icon_set_name($old_name);
+        $new_name = $this->sanitize_icon_set_name($new_name);
+
+        if ($old_name === $new_name) {
+            return [
+                'success' => false,
+                'message' => __('New name must be different from current name', 'omni-icon'),
+            ];
+        }
+
+        if ($new_name === 'local') {
+            return [
+                'success' => false,
+                'message' => __('Cannot use "local" as a set name', 'omni-icon'),
+            ];
+        }
+
+        $old_dir = $this->upload_dir . '/' . $old_name;
+        $new_dir = $this->upload_dir . '/' . $new_name;
+
+        if (!is_dir($old_dir)) {
+            return [
+                'success' => false,
+                'message' => __('Icon set not found', 'omni-icon'),
+            ];
+        }
+
+        if (file_exists($new_dir)) {
+            return [
+                'success' => false,
+                'message' => __('A set with this name already exists', 'omni-icon'),
+            ];
+        }
+
+        // Rename directory
+        if (!rename($old_dir, $new_dir)) {
+            return [
+                'success' => false,
+                'message' => __('Failed to rename icon set', 'omni-icon'),
+            ];
+        }
+
+        // Clear cache after successful rename
+        $this->clear_cache();
+
+        return [
+            'success' => true,
+            'message' => __('Icon set renamed successfully', 'omni-icon'),
+        ];
+    }
+
+    /**
      * Detect MIME type of a file
      *
      * @param string $path File path

@@ -74,8 +74,17 @@ class AdminPage
     {
         do_action('a!omni-icon/admin:enqueue_scripts.before');
 
-        // For now, we'll just enqueue a simple placeholder
-        // Later you can add Vite assets here similar to WindPress
+        // Enqueue admin app
+        $this->viteService->enqueue_asset('resources/admin/admin-app/index.jsx', [
+            'handle' => 'omni-icon-admin',
+            'in-footer' => true,
+        ]);
+
+        // Pass data to JavaScript
+        wp_localize_script('omni-icon-admin', 'omniIconAdmin', [
+            'apiUrl' => rest_url('omni-icon/v1/admin/local-icon'),
+            'nonce' => wp_create_nonce('wp_rest'),
+        ]);
 
         do_action('a!omni-icon/admin:enqueue_scripts.after');
     }

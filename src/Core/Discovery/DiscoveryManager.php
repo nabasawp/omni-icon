@@ -7,6 +7,7 @@ namespace OmniIcon\Core\Discovery;
 use OmniIcon\Core\Container\Container;
 use OmniIcon\Core\Database\Migration\MigrationDiscovery;
 use OmniIcon\Core\Logger\DiscoveryLogger;
+use OmniIcon\Core\Logger\LoggerService;
 use OMNI_ICON;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -110,11 +111,14 @@ final class DiscoveryManager
     {
         $this->discoveryCache = new DiscoveryCache($this->determineCacheStrategy());
 
+        // Create LoggerService for discoveries that require it (no dependencies required)
+        $loggerService = new LoggerService();
+
         $this->discoveries = [
             new ServiceDiscovery($this->container),
             new HookDiscovery($this->container),
-            new CommandDiscovery($this->container),
-            new MigrationDiscovery($this->container),
+            new CommandDiscovery($this->container, $loggerService),
+            new MigrationDiscovery($this->container, $loggerService),
             new ControllerDiscovery($this->container),
         ];
     }

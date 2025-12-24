@@ -23,13 +23,15 @@ export default defineConfig({
 				'integration/gutenberg/blocks/icon-block/iframe': 'resources/integration/gutenberg/blocks/icon-block/iframe.ts',
 				'webcomponents/omni-icon': 'resources/webcomponents/omni-icon.ts',
 
+				// admin
+				'admin/admin-app/index': 'resources/admin/admin-app/index.jsx',
 
-			// integration
-			'integration/bricks/editor': 'resources/integration/bricks/editor.ts',
-			'integration/livecanvas/editor': 'resources/integration/livecanvas/editor.ts',
-			'integration/elementor/editor': 'resources/integration/elementor/editor.ts',
-			'integration/breakdance/editor': 'resources/integration/breakdance/editor.ts',
-		},
+				// integration
+				'integration/bricks/editor': 'resources/integration/bricks/editor.ts',
+				'integration/livecanvas/editor': 'resources/integration/livecanvas/editor.ts',
+				'integration/elementor/editor': 'resources/integration/elementor/editor.ts',
+				'integration/breakdance/editor': 'resources/integration/breakdance/editor.ts',
+			},
 			// outDir: 'public/build',
 		}),
 		react(),
