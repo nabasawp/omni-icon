@@ -346,7 +346,7 @@ export class OmniIconRenderer {
 		}
 
 		// Lazy load ErrorObserver on first error
-		this.ensureErrorObserver();
+		await this.ensureErrorObserver();
 
 		element.dispatchEvent(
 			new CustomEvent('omni-icon:error', {
@@ -362,13 +362,14 @@ export class OmniIconRenderer {
 		);
 	}
 
-	private ensureErrorObserver(): void {
+	private async ensureErrorObserver(): Promise<void> {
 		if (!OmniIconRenderer.errorObserverLoaded && !OmniIconRenderer.errorObserverPromise) {
 			OmniIconRenderer.errorObserverPromise = import('./ErrorObserver').then(({ ErrorObserver }) => {
 				new ErrorObserver();
 				OmniIconRenderer.errorObserverLoaded = true;
 			});
 		}
+		await OmniIconRenderer.errorObserverPromise;
 	}
 
 	private shouldSkipAttribute(attrName: string): boolean {
