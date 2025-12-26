@@ -330,7 +330,7 @@ const IconPickerModal = ({ isOpen, onClose, onSelectIcon, currentIcon }) => {
 					</div>
 
 					{/* Confirmation Footer */}
-					{tempSelectedIcon !== currentIcon && (
+					{tempSelectedIcon !== currentIcon && (tempSelectedIcon || currentIcon) && (
 						<div className="oiib-icon-picker-footer">
 							<div className="oiib-selected-icon-preview">
 								{tempSelectedIcon ? (
