@@ -155,7 +155,7 @@ function release() {
     updateVersionInFile(join(rootDir, 'omni-icon.php'), version, [
       {
         search: ' \\* Version:\\s+[0-9]+\\.[0-9]+\\.[0-9]+',
-        replace: ` * Version:           ${version}`
+        replace: ` * Version:             ${version}`
       }
     ]);
     
