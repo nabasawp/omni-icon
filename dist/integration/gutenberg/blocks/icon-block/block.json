@@ -1,0 +1,49 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "omni-icon/icon-block",
+    "version": "2.0.0",
+    "title": "Omni Icon",
+    "category": "design",
+    "description": "The Icon block",
+    "keywords": [
+        "icon",
+        "iconify",
+        "svg",
+        "omni"
+    ],
+    "textdomain": "omni-icon",
+    "editorScript": "file:./index.js",
+    "attributes": {
+        "name": {
+            "type": "string",
+            "default": ""
+        },
+        "width": {
+            "type": "string"
+        },
+        "height": {
+            "type": "string"
+        },
+        "className": {
+            "type": "string",
+            "default": ""
+        },
+        "color": {
+            "type": "string",
+            "default": "currentColor"
+        }
+    },
+    "supports": {
+        "html": false,
+        "align": false,
+        "className": true
+    },
+    "example": {},
+    "script": [
+        "omni-icon:web-component:omni-icon",
+        "omni-icon:gutenberg-icon-block:iframe"
+    ],
+    "editorStyle": [
+    ]
+}

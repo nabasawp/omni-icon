@@ -1,0 +1,42 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@std/path@1": "1.1.0"
+  },
+  "jsr": {
+    "@std/path@1.1.0": {
+      "integrity": "ddc94f8e3c275627281cbc23341df6b8bcc874d70374f75fec2533521e3d6886"
+    }
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@floating-ui/dom@^1.7.4",
+        "npm:@iconify-json/tabler@^1.2.23",
+        "npm:@kucrut/vite-for-wp@0.12",
+        "npm:@svgr/core@^8.1.0",
+        "npm:@svgr/plugin-jsx@^8.1.0",
+        "npm:@vitejs/plugin-react@^5.1.1",
+        "npm:@vitejs/plugin-vue-jsx@^5.1.2",
+        "npm:@vitejs/plugin-vue@^6.0.2",
+        "npm:@wordpress/block-editor@^15.8.0",
+        "npm:@wordpress/blocks@^15.8.0",
+        "npm:@wordpress/components@^30.8.0",
+        "npm:@wordpress/element@^6.35.0",
+        "npm:@wordpress/i18n@^6.8.0",
+        "npm:idb-keyval@^6.2.2",
+        "npm:memfs@^4.51.0",
+        "npm:react-dom@^18.3.1",
+        "npm:react@^18.3.1",
+        "npm:rolldown-vite@^7.2.7",
+        "npm:rollup-plugin-external-globals@0.13",
+        "npm:sass-embedded@^1.93.3",
+        "npm:unplugin-icons@^22.5.0",
+        "npm:vite-plugin-external@^6.2.2",
+        "npm:vite-plugin-node-polyfills@0.24",
+        "npm:vite-plugin-static-copy@^3.1.4",
+        "npm:vite-plugin-svgr@^4.5.0"
+      ]
+    }
+  }
+}

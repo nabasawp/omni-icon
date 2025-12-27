@@ -1,0 +1,146 @@
+{
+  "_IconItem-BVMBjRxz.js": {
+    "file": "assets/IconItem-BVMBjRxz.js",
+    "name": "IconItem",
+    "imports": [
+      "_check-qjydXzqM.js"
+    ]
+  },
+  "_check-qjydXzqM.js": {
+    "file": "assets/check-qjydXzqM.js",
+    "name": "check"
+  },
+  "_editor-DOW6C4b-.css": {
+    "file": "assets/editor-DOW6C4b-.css",
+    "src": "_editor-DOW6C4b-.css"
+  },
+  "resources/admin/admin-app/index.jsx": {
+    "file": "assets/admin/admin-app/index-0MUmaM6t.js",
+    "name": "admin/admin-app/index",
+    "src": "resources/admin/admin-app/index.jsx",
+    "isEntry": true,
+    "imports": [
+      "_check-qjydXzqM.js"
+    ],
+    "css": [
+      "assets/index-DSHIJ6-f.css"
+    ]
+  },
+  "resources/integration/breakdance/editor.ts": {
+    "file": "assets/integration/breakdance/editor-BKMFl5p8.js",
+    "name": "integration/breakdance/editor",
+    "src": "resources/integration/breakdance/editor.ts",
+    "isEntry": true,
+    "imports": [
+      "_IconItem-BVMBjRxz.js",
+      "_check-qjydXzqM.js"
+    ],
+    "css": [
+      "assets/editor-U-mK1Xnb.css"
+    ]
+  },
+  "resources/integration/bricks/editor.ts": {
+    "file": "assets/integration/bricks/editor-CMHL3VHg.js",
+    "name": "integration/bricks/editor",
+    "src": "resources/integration/bricks/editor.ts",
+    "isEntry": true,
+    "imports": [
+      "_IconItem-BVMBjRxz.js",
+      "_check-qjydXzqM.js"
+    ],
+    "css": [
+      "assets/editor-BbAJQKNP.css"
+    ]
+  },
+  "resources/integration/elementor/editor.ts": {
+    "file": "assets/integration/elementor/editor-BuqzYEg4.js",
+    "name": "integration/elementor/editor",
+    "src": "resources/integration/elementor/editor.ts",
+    "isEntry": true,
+    "imports": [
+      "_IconItem-BVMBjRxz.js",
+      "_check-qjydXzqM.js"
+    ],
+    "css": [
+      "assets/editor-m4MKDXlG.css"
+    ]
+  },
+  "resources/integration/gutenberg/blocks/icon-block/editor.css": {
+    "file": "assets/integration/gutenberg/blocks/icon-block/css-B9h5qNxJ.js",
+    "name": "integration/gutenberg/blocks/icon-block/css",
+    "src": "resources/integration/gutenberg/blocks/icon-block/editor.css",
+    "isEntry": true,
+    "css": [
+      "assets/editor-DOW6C4b-.css"
+    ]
+  },
+  "resources/integration/gutenberg/blocks/icon-block/iframe.ts": {
+    "file": "assets/integration/gutenberg/blocks/icon-block/iframe-D9xx5sJI.js",
+    "name": "integration/gutenberg/blocks/icon-block/iframe",
+    "src": "resources/integration/gutenberg/blocks/icon-block/iframe.ts",
+    "isEntry": true
+  },
+  "resources/integration/gutenberg/blocks/icon-block/index.jsx": {
+    "file": "assets/integration/gutenberg/blocks/icon-block-D8_tJ3Pf.js",
+    "name": "integration/gutenberg/blocks/icon-block",
+    "src": "resources/integration/gutenberg/blocks/icon-block/index.jsx",
+    "isEntry": true,
+    "imports": [
+      "_IconItem-BVMBjRxz.js",
+      "_check-qjydXzqM.js"
+    ],
+    "css": [
+      "assets/editor-DOW6C4b-.css"
+    ]
+  },
+  "resources/integration/livecanvas/editor.ts": {
+    "file": "assets/integration/livecanvas/editor-DgURTmyO.js",
+    "name": "integration/livecanvas/editor",
+    "src": "resources/integration/livecanvas/editor.ts",
+    "isEntry": true,
+    "imports": [
+      "_IconItem-BVMBjRxz.js",
+      "_check-qjydXzqM.js"
+    ],
+    "css": [
+      "assets/editor-iZs-igZA.css"
+    ]
+  },
+  "resources/webcomponents/ErrorObserver.css": {
+    "file": "assets/ErrorObserver-DlFfVRM7.css",
+    "src": "resources/webcomponents/ErrorObserver.css"
+  },
+  "resources/webcomponents/ErrorObserver.ts": {
+    "file": "assets/ErrorObserver-BL-dIQLj.js",
+    "name": "ErrorObserver",
+    "src": "resources/webcomponents/ErrorObserver.ts",
+    "isDynamicEntry": true,
+    "assets": [
+      "assets/ErrorObserver-DlFfVRM7.css"
+    ]
+  },
+  "resources/webcomponents/OmniIconRenderer.ts": {
+    "file": "assets/OmniIconRenderer-CPDO0Yqc.js",
+    "name": "OmniIconRenderer",
+    "src": "resources/webcomponents/OmniIconRenderer.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/webcomponents/omni-icon.ts"
+    ],
+    "dynamicImports": [
+      "resources/webcomponents/ErrorObserver.ts"
+    ]
+  },
+  "resources/webcomponents/omni-icon.ts": {
+    "file": "assets/webcomponents/omni-icon-D4fSwBeM.js",
+    "name": "webcomponents/omni-icon",
+    "src": "resources/webcomponents/omni-icon.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "resources/webcomponents/OmniIconRenderer.ts"
+    ],
+    "css": [
+      "assets/omni-icon-QmP5ZpKA.css"
+    ]
+  }
+}

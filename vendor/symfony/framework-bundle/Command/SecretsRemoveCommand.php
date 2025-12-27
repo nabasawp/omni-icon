@@ -1,0 +1,78 @@
+<?php
+
+/*
+ * This file is part of the Symfony package.
+ *
+ * (c) Fabien Potencier <fabien@symfony.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+namespace OmniIconDeps\Symfony\Bundle\FrameworkBundle\Command;
+
+use OmniIconDeps\Symfony\Bundle\FrameworkBundle\Secrets\AbstractVault;
+use OmniIconDeps\Symfony\Component\Console\Attribute\AsCommand;
+use OmniIconDeps\Symfony\Component\Console\Command\Command;
+use OmniIconDeps\Symfony\Component\Console\Completion\CompletionInput;
+use OmniIconDeps\Symfony\Component\Console\Completion\CompletionSuggestions;
+use OmniIconDeps\Symfony\Component\Console\Input\InputArgument;
+use OmniIconDeps\Symfony\Component\Console\Input\InputInterface;
+use OmniIconDeps\Symfony\Component\Console\Input\InputOption;
+use OmniIconDeps\Symfony\Component\Console\Output\ConsoleOutputInterface;
+use OmniIconDeps\Symfony\Component\Console\Output\OutputInterface;
+use OmniIconDeps\Symfony\Component\Console\Style\SymfonyStyle;
+/**
+ * @author Jérémy Derussé <jeremy@derusse.com>
+ * @author Nicolas Grekas <p@tchwork.com>
+ *
+ * @internal
+ */
+#[AsCommand(name: 'secrets:remove', description: 'Remove a secret from the vault')]
+final class SecretsRemoveCommand extends Command
+{
+    public function __construct(private AbstractVault $vault, private ?AbstractVault $localVault = null)
+    {
+        parent::__construct();
+    }
+    protected function configure(): void
+    {
+        $this->addArgument('name', InputArgument::REQUIRED, 'The name of the secret')->addOption('local', 'l', InputOption::VALUE_NONE, 'Update the local vault.')->setHelp(<<<'EOF'
+The <info>%command.name%</info> command removes a secret from the vault.
+
+    <info>%command.full_name% <name></info>
+EOF
+);
+    }
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output instanceof ConsoleOutputInterface ? $output->getErrorOutput() : $output);
+        $vault = $input->getOption('local') ? $this->localVault : $this->vault;
+        if (null === $vault) {
+            $io->error('The local vault is disabled.');
+            return 1;
+        }
+        if ($vault->remove($name = $input->getArgument('name'))) {
+            $io->success($vault->getLastMessage() ?? 'Secret was removed from the vault.');
+        } else {
+            $io->comment($vault->getLastMessage() ?? 'Secret was not found in the vault.');
+        }
+        if ($this->vault === $vault && null !== $this->localVault->reveal($name)) {
+            $io->comment('Note that this secret is overridden in the local vault.');
+        }
+        return 0;
+    }
+    public function complete(CompletionInput $input, CompletionSuggestions $suggestions): void
+    {
+        if (!$input->mustSuggestArgumentValuesFor('name')) {
+            return;
+        }
+        $vaultKeys = array_keys($this->vault->list(\false));
+        if ($input->getOption('local')) {
+            if (null === $this->localVault) {
+                return;
+            }
+            $vaultKeys = array_intersect($vaultKeys, array_keys($this->localVault->list(\false)));
+        }
+        $suggestions->suggestValues($vaultKeys);
+    }
+}
