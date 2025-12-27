@@ -71,7 +71,21 @@ return [
     // heart contents.
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#patchers
-    'patchers' => [],
+    'patchers' => [
+        // Fix Symfony Cache ValueWrapper class reference
+        // The ValueWrapper class uses "\xA9" (©) as class name, which needs to be prefixed
+        static function (string $filePath, string $prefix, string $contents): string {
+            if (str_ends_with($filePath, 'symfony/cache/CacheItem.php')) {
+                // Update VALUE_WRAPPER constant to include namespace prefix
+                $contents = str_replace(
+                    'private const VALUE_WRAPPER = "\xa9";',
+                    'private const VALUE_WRAPPER = "' . $prefix . '\\\xa9";',
+                    $contents
+                );
+            }
+            return $contents;
+        },
+    ],
 
     // List of symbols to consider internal i.e. to leave untouched.
     //

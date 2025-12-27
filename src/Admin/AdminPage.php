@@ -78,6 +78,14 @@ class AdminPage
         $this->viteService->enqueue_asset('resources/admin/admin-app/index.jsx', [
             'handle' => 'omni-icon-admin',
             'in-footer' => true,
+            'dependencies' => [
+                'react',
+                'react-dom',
+                'wp-element',
+                'wp-components',
+                'wp-i18n',
+                'wp-data',
+            ],
         ]);
 
         // Pass data to JavaScript

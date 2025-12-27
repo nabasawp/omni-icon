@@ -57,7 +57,7 @@ composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --no-dev
 # clean deploy files and directories
 rm -rf "$DEPLOY_DIRECTORY"
 rm -rf "$RESULT_DIRECTORY/deploy"
-rm -f "$RESULT_DIRECTORY/composer.json"
+# rm -f "$RESULT_DIRECTORY/composer.json" # required by the auto-discovery
 rm -f "$RESULT_DIRECTORY/composer.lock"
 rm -f "$RESULT_DIRECTORY/.gitattributes"
 rm -f "$RESULT_DIRECTORY/.gitignore"

@@ -210,8 +210,19 @@ final class DiscoveryManager
         }
 
         foreach (array_keys($classes) as $className) {
-            if (!class_exists($className)) {
-                continue;
+            // Use class_exists with autoload=false since we already have the file path from classmap
+            // This prevents fatal errors when a class file has missing dependencies
+            if (!class_exists($className, false)) {
+                // Try to load the class file, but catch any errors
+                try {
+                    require_once $classes[$className];
+                    if (!class_exists($className, false)) {
+                        continue;
+                    }
+                } catch (Throwable $e) {
+                    $this->logger->debug('Skipped class due to load error', ['component' => 'DiscoveryManager', 'className' => $className, 'error' => $e->getMessage()]);
+                    continue;
+                }
             }
 
             try {

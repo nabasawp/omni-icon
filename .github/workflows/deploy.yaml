@@ -82,16 +82,18 @@ jobs:
           run: deno run --allow-read --allow-write deploy/update-readme-changelog.ts
 
         # clean up the dev files
-        - run: rm -rf resources node_modules package.json pnpm-lock.yaml vite.config.js
+        - run: rm -rf resources node_modules package.json pnpm-lock.yaml vite.config.js deno.lock
         - run: rm -rf CLAUDE.md .agents DEVELOPMENT.md
         - run: rm -rf CHANGELOG.md
-        - run: rm -rf yaak svg
+        - run: rm -rf yaak
 
         # install only prod dependencies
         - run: composer install --no-dev --classmap-authoritative --ansi
 
-        # copy files to deploy directory, excluding nested directories to prevent rsync from copying in a loop
-        - run: rsync --exclude omni-icon-deploy -av * omni-icon-deploy --quiet
+        # copy files to deploy directory, including hidden files like .discovery-skip
+        - run: |
+            mkdir -p omni-icon-deploy
+            rsync -av --exclude omni-icon-deploy --exclude .git --exclude .github ./ omni-icon-deploy/ --quiet
 
         # prefix the namespaces
         - run: sh deploy/deploy-scoped.sh omni-icon-deploy omni-icon-prefixed

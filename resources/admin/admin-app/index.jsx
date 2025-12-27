@@ -1,4 +1,4 @@
-import { createRoot } from 'react-dom/client';
+import * as ReactDOM from 'react-dom';
 import { StrictMode } from 'react';
 import AdminApp from './components/AdminApp';
 import './admin-app.scss';
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const container = document.getElementById('omni-icon-app');
 	
 	if (container) {
-		const root = createRoot(container);
+		const root = ReactDOM.createRoot(container);
 		root.render(
 			<StrictMode>
 				<AdminApp />
