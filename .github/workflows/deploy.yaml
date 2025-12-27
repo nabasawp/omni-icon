@@ -123,8 +123,8 @@ jobs:
               echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/nabasa-dev/omni-icon/commit/%H %s')" >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
-        # publish it to dist branch with tag
-        - name: "Commit Prefixed - tag"
+        # publish it to dist branch (without tag, since tag already exists on main)
+        - name: "Commit Prefixed"
           working-directory: dist-branch
           if: "startsWith(github.ref, 'refs/tags/')"
           env:
@@ -135,8 +135,6 @@ jobs:
             git add --all
             git commit -m "Omni Icon $VERSION_NO_V" -m "$INPUT_LOG"
             git push --quiet origin dist
-            git tag $VERSION_NO_V -m "$VERSION_NO_V"
-            git push --quiet origin $VERSION_NO_V
 
         # Create GitHub Release with changelog and zip file
         - name: "Create plugin zip file"
