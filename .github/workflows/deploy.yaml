@@ -57,6 +57,11 @@ jobs:
           env:
             COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+        # Setup Deno for update-readme-changelog script
+        - uses: denoland/setup-deno@v2
+          with:
+            deno-version: v2.x
+
         # Extract changelog content before removing the file (if CHANGELOG.md exists)
         - name: "Extract changelog for version"
           id: changelog
@@ -71,6 +76,10 @@ jobs:
             else
               echo "content=Release $VERSION_NO_V" >> $GITHUB_OUTPUT
             fi
+
+        # Update readme.txt changelog from CHANGELOG.md
+        - name: "Update readme.txt changelog"
+          run: deno run --allow-read --allow-write deploy/update-readme-changelog.ts
 
         # clean up the dev files
         - run: rm -rf resources node_modules package.json pnpm-lock.yaml vite.config.js
@@ -87,26 +96,21 @@ jobs:
         # prefix the namespaces
         - run: sh deploy/deploy-scoped.sh omni-icon-deploy omni-icon-prefixed
 
-        # clone remote repository, so we can push it
-        - uses: actions/checkout@v4
-          with:
-            repository: nabasa-dev/omni-icon-deployed
-            ref: main
-            path: remote-repository
-            fetch-depth: 0
-            token: ${{ secrets.ORG_DEV_PAT }}
-
-        # remove remote files, to avoid piling up dead code in remote repository
-        - working-directory: remote-repository
+        # clone current repository and checkout/create dist branch
+        - name: "Checkout or create dist branch"
           run: |
-            git rm -rf .
+            git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git dist-branch
+            cd dist-branch
+            git fetch origin dist || true
+            git checkout dist 2>/dev/null || git checkout --orphan dist
+            git rm -rf . 2>/dev/null || true
             git clean -fxd
 
-        # copy files to remote repository
-        - run: cp -a omni-icon-prefixed/. remote-repository
+        # copy files to dist branch
+        - run: cp -a omni-icon-prefixed/. dist-branch
 
         # setup git
-        - working-directory: remote-repository
+        - working-directory: dist-branch
           run: |
             git config user.name "Joshua Gugun Siagian"
             git config user.email suabahasa@gmail.com
@@ -119,9 +123,9 @@ jobs:
               echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/nabasa-dev/omni-icon/commit/%H %s')" >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
-        # publish it to remote repository with tag
+        # publish it to dist branch with tag
         - name: "Commit Prefixed - tag"
-          working-directory: remote-repository
+          working-directory: dist-branch
           if: "startsWith(github.ref, 'refs/tags/')"
           env:
               INPUT_LOG: ${{ steps.git-log.outputs.log }}
@@ -130,7 +134,7 @@ jobs:
             VERSION_NO_V=${VERSION#v}
             git add --all
             git commit -m "Omni Icon $VERSION_NO_V" -m "$INPUT_LOG"
-            git push --quiet origin main
+            git push --quiet origin dist
             git tag $VERSION_NO_V -m "$VERSION_NO_V"
             git push --quiet origin $VERSION_NO_V
 

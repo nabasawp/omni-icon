@@ -139,8 +139,3 @@ Yes, Omni Icon is compatible with any WordPress theme. You can use the web compo
 Omni Icon uses the Iconify API to fetch icons from their extensive icon collections.
 
 == Changelog ==
-
-= 1.0.0 =
-* Initial release
-
-[See changelog for all versions.](https://github.com/nabasa-dev/omni-icon/blob/main/CHANGELOG.md)

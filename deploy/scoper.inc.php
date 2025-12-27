@@ -84,12 +84,15 @@ return [
 
         // Page builders
         'Bricks',
+        
         'Breakdance',
+        'EssentialElements',
+
         'Elementor',
+        
         'LiveCanvas',
 
         // Cache plugins
-        'SiteGround_Optimizer',
     ],
     'exclude-classes' => array_merge(
         $wp_classes,
@@ -104,15 +107,11 @@ return [
         $wp_functions,
         [
             // Cache clearing functions
-            'wp_cache_flush',
-            'rocket_clean_domain',
-            'wp_cache_clear_cache',
-            'w3tc_flush_all',
-            'wpfc_clear_all_cache',
 
             // Page builder functions
             'bricks_is_builder_main',
             'bricks_is_builder_iframe',
+            'bricks_render_dynamic_data',
         ]
     ),
     'exclude-constants' => array_merge(
@@ -139,11 +138,6 @@ return [
 
             // Bricks
             'BRICKS_VERSION',
-            'BRICKS_DB_PAGE_HEADER',
-            'BRICKS_DB_PAGE_CONTENT',
-            'BRICKS_DB_PAGE_FOOTER',
-            'BRICKS_DB_TEMPLATE_SLUG',
-            'BRICKS_DB_GLOBAL_CLASSES',
 
             // Breakdance
             '__BREAKDANCE_VERSION',
