@@ -54,16 +54,7 @@ return [
     // This configuration entry is completely ignored when using Box.
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
-    'finders' => [
-        Finder::create()
-            ->files()
-            ->ignoreVCS(true)
-            ->notName('/.*\\.md(?:own)?$/')
-            ->exclude([
-                'deploy',
-            ])
-            ->in(dirname(__DIR__)),
-    ],
+    // 'finders' => [],
 
     // List of excluded files, i.e. files for which the content will be left untouched.
     // Paths are relative to the configuration file unless if they are already absolute

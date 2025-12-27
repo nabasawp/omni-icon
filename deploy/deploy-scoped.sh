@@ -54,6 +54,17 @@ rm -f "$RESULT_DIRECTORY/php-scoper.phar"
 note "Dumping Composer Autoload"
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --no-dev
 
+# copy .discovery-skip files from deploy directory to result directory
+note "Copying .discovery-skip files"
+find "$DEPLOY_DIRECTORY" -name ".discovery-skip" -type f | while read -r file; do
+    # Get the relative path from DEPLOY_DIRECTORY
+    rel_path="${file#$DEPLOY_DIRECTORY/}"
+    # Create the directory structure in RESULT_DIRECTORY
+    mkdir -p "$RESULT_DIRECTORY/$(dirname "$rel_path")"
+    # Copy the file
+    cp "$file" "$RESULT_DIRECTORY/$rel_path"
+done
+
 # clean deploy files and directories
 rm -rf "$DEPLOY_DIRECTORY"
 rm -rf "$RESULT_DIRECTORY/deploy"
