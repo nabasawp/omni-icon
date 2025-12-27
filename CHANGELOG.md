@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.5] - 2025-12-27
+
 ### Fixed
 - Copy `.discovery-skip` files manually after php-scoper runs, as php-scoper only processes PHP files by default.
 
@@ -32,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - 🐣 Initial release.
 
-[unreleased]: https://github.com/nabasa-dev/omni-icon/compare/1.0.4...HEAD
+[unreleased]: https://github.com/nabasa-dev/omni-icon/compare/1.0.5...HEAD
+[1.0.5]: https://github.com/nabasa-dev/omni-icon/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/nabasa-dev/omni-icon/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/nabasa-dev/omni-icon/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/nabasa-dev/omni-icon/compare/1.0.1...1.0.2
