@@ -1,0 +1,34 @@
+{
+    "name": "omni\/icon",
+    "description": "WordPress plugin for Iconify icon blocks in Gutenberg",
+    "type": "wordpress-plugin",
+    "version": "1.0.0",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=8.2",
+        "enshrined\/svg-sanitize": "^0.22.0",
+        "kucrut\/vite-for-wp": "^0.12.0",
+        "psr\/container": "^2.0",
+        "psr\/log": "^3.0",
+        "symfony\/cache": "^7.4",
+        "symfony\/http-client": "^7.4",
+        "symfony\/mime": "^7.4",
+        "symfony\/ux-icons": "^2.30"
+    },
+    "autoload": {
+        "psr-4": {
+            "OmniIcon\\": "src\/"
+        },
+        "files": [
+            "constant.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "require-dev": {
+        "php-stubs\/wordpress-stubs": "^6.8"
+    }
+}

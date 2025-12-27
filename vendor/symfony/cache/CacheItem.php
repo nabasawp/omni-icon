@@ -21,7 +21,7 @@ use OmniIconDeps\Symfony\Contracts\Cache\ItemInterface;
 final class CacheItem implements ItemInterface
 {
     private const METADATA_EXPIRY_OFFSET = 1527506807;
-    private const VALUE_WRAPPER = "\xa9";
+    private const VALUE_WRAPPER = "OmniIconDeps\\xa9";
     protected string $key;
     protected mixed $value = null;
     protected bool $isHit = \false;

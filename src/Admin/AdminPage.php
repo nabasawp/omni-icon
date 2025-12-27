@@ -55,7 +55,7 @@ class AdminPage
     {
         do_action('a!omni-icon/admin:enqueue_scripts.before');
         // Enqueue admin app
-        $this->viteService->enqueue_asset('resources/admin/admin-app/index.jsx', ['handle' => 'omni-icon-admin', 'in-footer' => \true]);
+        $this->viteService->enqueue_asset('resources/admin/admin-app/index.jsx', ['handle' => 'omni-icon-admin', 'in-footer' => \true, 'dependencies' => ['react', 'react-dom', 'wp-element', 'wp-components', 'wp-i18n', 'wp-data']]);
         // Pass data to JavaScript
         wp_localize_script('omni-icon-admin', 'omniIconAdmin', ['apiUrl' => rest_url('omni-icon/v1/admin/local-icon'), 'nonce' => wp_create_nonce('wp_rest'), 'version' => OMNI_ICON::VERSION]);
         do_action('a!omni-icon/admin:enqueue_scripts.after');
