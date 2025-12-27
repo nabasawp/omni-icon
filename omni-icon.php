@@ -6,7 +6,7 @@
  * Plugin URI:          https://github.com/nabasa-dev/omni-icon
  * Description:         Add Iconify icon blocks to Gutenberg editor with symfony_ux integration. Browse and use thousands of icons powered by Iconify.
  * Text Domain:         omni-icon
- * Version:             0.0.1
+ * Version:             1.0.0
  * Requires at least:   6.0
  * Requires PHP:        8.2
  * Author:              Omni Icon
