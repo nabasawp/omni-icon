@@ -30,18 +30,18 @@ if (!function_exists('humbug_phpscoper_expose_class')) {
     }
 }
 humbug_phpscoper_expose_class('OMNI_ICON', 'OmniIconDeps\OMNI_ICON');
-humbug_phpscoper_expose_class('Normalizer', 'OmniIconDeps\Normalizer');
-humbug_phpscoper_expose_class('DateError', 'OmniIconDeps\DateError');
-humbug_phpscoper_expose_class('DateException', 'OmniIconDeps\DateException');
-humbug_phpscoper_expose_class('DateInvalidOperationException', 'OmniIconDeps\DateInvalidOperationException');
-humbug_phpscoper_expose_class('DateInvalidTimeZoneException', 'OmniIconDeps\DateInvalidTimeZoneException');
-humbug_phpscoper_expose_class('DateMalformedIntervalStringException', 'OmniIconDeps\DateMalformedIntervalStringException');
 humbug_phpscoper_expose_class('DateMalformedPeriodStringException', 'OmniIconDeps\DateMalformedPeriodStringException');
-humbug_phpscoper_expose_class('DateMalformedStringException', 'OmniIconDeps\DateMalformedStringException');
+humbug_phpscoper_expose_class('DateInvalidOperationException', 'OmniIconDeps\DateInvalidOperationException');
 humbug_phpscoper_expose_class('DateObjectError', 'OmniIconDeps\DateObjectError');
-humbug_phpscoper_expose_class('DateRangeError', 'OmniIconDeps\DateRangeError');
-humbug_phpscoper_expose_class('Override', 'OmniIconDeps\Override');
+humbug_phpscoper_expose_class('DateMalformedIntervalStringException', 'OmniIconDeps\DateMalformedIntervalStringException');
 humbug_phpscoper_expose_class('SQLite3Exception', 'OmniIconDeps\SQLite3Exception');
+humbug_phpscoper_expose_class('DateRangeError', 'OmniIconDeps\DateRangeError');
+humbug_phpscoper_expose_class('DateInvalidTimeZoneException', 'OmniIconDeps\DateInvalidTimeZoneException');
+humbug_phpscoper_expose_class('DateException', 'OmniIconDeps\DateException');
+humbug_phpscoper_expose_class('DateMalformedStringException', 'OmniIconDeps\DateMalformedStringException');
+humbug_phpscoper_expose_class('DateError', 'OmniIconDeps\DateError');
+humbug_phpscoper_expose_class('Override', 'OmniIconDeps\Override');
+humbug_phpscoper_expose_class('Normalizer', 'OmniIconDeps\Normalizer');
 
 // Function aliases. For more information see:
 // https://github.com/humbug/php-scoper/blob/master/docs/further-reading.md#function-aliases
