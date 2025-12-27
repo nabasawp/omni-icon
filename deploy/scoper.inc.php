@@ -40,17 +40,6 @@ $polyfillsStubs = array_map(
     ),
 );
 
-$discoverySkipFiles = array_map(
-    static fn (SplFileInfo $fileInfo) => $fileInfo->getPathname(),
-    iterator_to_array(
-        Finder::create()
-            ->files()
-            ->in(dirname(__DIR__))
-            ->name('.discovery-skip'),
-        false,
-    ),
-);
-
 return [
     // The prefix configuration. If a non null value is be used, a random prefix
     // will be generated instead.
@@ -66,10 +55,13 @@ return [
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
     'finders' => [
-        // Include .discovery-skip files
         Finder::create()
             ->files()
-            ->name('.discovery-skip')
+            ->ignoreVCS(true)
+            ->notName('/.*\\.md(?:own)?$/')
+            ->exclude([
+                'deploy',
+            ])
             ->in(dirname(__DIR__)),
     ],
 
@@ -80,7 +72,6 @@ return [
     'exclude-files' => [
         ...$polyfillsBootstraps,
         ...$polyfillsStubs,
-        ...$discoverySkipFiles,
     ],
 
     // When scoping PHP files, there will be scenarios where some of the code being scoped indirectly references the
