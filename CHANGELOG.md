@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-12-27
+
 ### Added
 - 🐣 Initial release.
 
-[unreleased]: https://github.com/nabasawp/omni-icon/compare/main...HEAD
+[unreleased]: https://github.com/nabasa-dev/omni-icon/compare/main...HEAD

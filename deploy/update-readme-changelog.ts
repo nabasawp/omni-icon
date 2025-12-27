@@ -57,6 +57,11 @@ function parseChangelog(changelogContent: string): ChangelogEntry[] {
       continue;
     }
     
+    // Skip comparison links at the bottom of CHANGELOG.md
+    if (line.match(/^\[.+?\]: https?:\/\//)) {
+      continue;
+    }
+    
     // Collect content for current entry
     if (inEntry && currentEntry) {
       // Convert markdown format to readme.txt format
