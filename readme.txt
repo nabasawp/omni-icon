@@ -4,7 +4,7 @@ Donate link: https://ko-fi.com/Q5Q75XSF7
 Tags: icons, iconify, gutenberg, svg, icon block
 Requires at least: 6.0
 Tested up to: 6.9
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -139,6 +139,10 @@ Yes, Omni Icon is compatible with any WordPress theme. You can use the web compo
 Omni Icon uses the Iconify API to fetch icons from their extensive icon collections.
 
 == Changelog ==
+
+= 1.0.3 - 2025-12-27 =
+**Fixed**
+* Configure php-scoper to properly include `.discovery-skip` files in the release package (the fix in 1.0.2 was incomplete).
 
 = 1.0.2 - 2025-12-27 =
 **Fixed**
