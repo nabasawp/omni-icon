@@ -26,13 +26,19 @@ export const useDebounce = (value, delay = 300) => {
 /**
  * Custom hook for fetching icon collections
  * @param {boolean} isOpen - Whether the modal is open
- * @returns {Object} { collections, isLoading, error }
+ * @returns {Object} { collections, isLoading, error, refreshCollections }
  */
 export const useIconCollections = (isOpen) => {
 	const [collections, setCollections] = useState({});
 	const [isLoading, setIsLoading] = useState(false);
+	const [isRefreshing, setIsRefreshing] = useState(false);
 	const [error, setError] = useState(null);
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
 	const abortControllerRef = useRef(null);
+
+	const refreshCollections = useCallback(() => {
+		setRefreshTrigger(prev => prev + 1);
+	}, []);
 
 	useEffect(() => {
 		if (!isOpen) return;
@@ -47,10 +53,17 @@ export const useIconCollections = (isOpen) => {
 			abortControllerRef.current = abortController;
 
 			try {
-				setIsLoading(true);
+				// Only show main loading on initial load, not on refresh
+				if (refreshTrigger === 0) {
+					setIsLoading(true);
+				} else {
+					setIsRefreshing(true);
+				}
 				setError(null);
 				
-				const response = await fetch('/wp-json/omni-icon/v1/icon/collections', {
+				// Add cache-busting parameter when manually refreshing
+				const cacheBuster = refreshTrigger > 0 ? `?_=${Date.now()}` : '';
+				const response = await fetch(`/wp-json/omni-icon/v1/icon/collections${cacheBuster}`, {
 					headers: { Accept: 'application/json' },
 					signal: abortController.signal,
 				});
@@ -72,6 +85,7 @@ export const useIconCollections = (isOpen) => {
 				if (abortControllerRef.current === abortController) {
 					abortControllerRef.current = null;
 					setIsLoading(false);
+					setIsRefreshing(false);
 				}
 			}
 		};
@@ -85,9 +99,9 @@ export const useIconCollections = (isOpen) => {
 				abortControllerRef.current = null;
 			}
 		};
-	}, [isOpen]);
+	}, [isOpen, refreshTrigger]);
 
-	return { collections, isLoading, error };
+	return { collections, isLoading, isRefreshing, error, refreshCollections };
 };
 
 /**

@@ -1,6 +1,8 @@
 import { __ } from '@wordpress/i18n';
 
 const AboutTab = () => {
+	const version = window.omniIconAdmin?.version;
+	
 	return (
 		<div className="omni-icon-tab-content omni-icon-about-tab">
 			<div className="about-hero">
@@ -61,8 +63,8 @@ const AboutTab = () => {
 						<div className="footer-card-content">
 							<h4>{__('GitHub Repository', 'omni-icon')}</h4>
 							<p>
-								<a href="https://github.com/suabahasa/omni-icon" target="_blank" rel="noopener noreferrer">
-									suabahasa/omni-icon
+								<a href="https://github.com/nabasa-dev/omni-icon" target="_blank" rel="noopener noreferrer">
+									nabasa-dev/omni-icon
 								</a>
 							</p>
 						</div>
@@ -74,7 +76,7 @@ const AboutTab = () => {
 						</div>
 						<div className="footer-card-content">
 							<h4>{__('Current Version', 'omni-icon')}</h4>
-							<p>1.0.0-beta</p>
+							<p>{version}</p>
 						</div>
 					</div>
 

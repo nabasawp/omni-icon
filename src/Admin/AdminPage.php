@@ -84,6 +84,7 @@ class AdminPage
         wp_localize_script('omni-icon-admin', 'omniIconAdmin', [
             'apiUrl' => rest_url('omni-icon/v1/admin/local-icon'),
             'nonce' => wp_create_nonce('wp_rest'),
+            'version' => OMNI_ICON::VERSION,
         ]);
 
         do_action('a!omni-icon/admin:enqueue_scripts.after');

@@ -106,12 +106,12 @@ class BundleIconService
             $item->expiresAfter(300); // 5 minutes
             
             $icons = $this->scan_directory();
-            $samples = array_slice($icons, 0, 6);
+            // $samples = array_slice($icons, 0, 6);
 
             return [
                 'name' => 'Bundled Omni Icons',
                 'total' => count($icons),
-                'samples' => array_map(static fn($file) => pathinfo(basename($file), PATHINFO_FILENAME), $samples),
+                'samples' => array_map(static fn($file) => pathinfo(basename($file), PATHINFO_FILENAME), $icons),
             ];
         });
     }

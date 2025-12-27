@@ -291,11 +291,11 @@ class LocalIconService
             // Add "local" set for root directory icons
             $root_icons = $this->scan_directory($this->upload_dir, false);
             if (!empty($root_icons)) {
-                $samples = array_slice($root_icons, 0, 6);
+                // Return ALL icons as samples instead of just 6
                 $sets['local'] = [
                     'name' => 'Local Icons',
                     'total' => count($root_icons),
-                    'samples' => array_map(static fn($file) => pathinfo(basename($file), PATHINFO_FILENAME), $samples),
+                    'samples' => array_map(static fn($file) => pathinfo(basename($file), PATHINFO_FILENAME), $root_icons),
                 ];
             }
 
@@ -312,12 +312,12 @@ class LocalIconService
             foreach ($subdirs as $subdir) {
                 $prefix = basename($subdir);
                 $icons = $this->scan_directory($subdir, false);
-                $samples = array_slice($icons, 0, 6);
+                // Return ALL icons as samples instead of just 6
 
                 $sets[$prefix] = [
                     'name' => ucfirst($prefix),
                     'total' => count($icons),
-                    'samples' => array_map(static fn($file) => pathinfo(basename($file), PATHINFO_FILENAME), $samples),
+                    'samples' => array_map(static fn($file) => pathinfo(basename($file), PATHINFO_FILENAME), $icons),
                 ];
             }
 

@@ -14,7 +14,7 @@ env:
 jobs:
   build_scoped_omni_icon:
     # Don't run on forks.
-    if: github.repository == 'omni-icon/omni-icon'
+    if: github.repository == 'nabasa-dev/omni-icon'
 
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -90,7 +90,7 @@ jobs:
         # clone remote repository, so we can push it
         - uses: actions/checkout@v4
           with:
-            repository: omni-icon/omni-icon-deployed
+            repository: nabasa-dev/omni-icon-deployed
             ref: main
             path: remote-repository
             fetch-depth: 0
@@ -116,7 +116,7 @@ jobs:
           id: git-log
           run: |
               echo "log<<EOF" >> $GITHUB_OUTPUT
-              echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/omni-icon/omni-icon/commit/%H %s')" >> $GITHUB_OUTPUT
+              echo "$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='https://github.com/nabasa-dev/omni-icon/commit/%H %s')" >> $GITHUB_OUTPUT
               echo 'EOF' >> $GITHUB_OUTPUT
 
         # publish it to remote repository with tag

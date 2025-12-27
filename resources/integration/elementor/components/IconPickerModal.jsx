@@ -5,6 +5,7 @@ import IconSearch from '~icons/tabler/search';
 import IconX from '~icons/tabler/x';
 import IconChevronLeft from '~icons/tabler/chevron-left';
 import IconChevronRight from '~icons/tabler/chevron-right';
+import IconRefresh from '~icons/tabler/refresh';
 
 // Import custom hooks from Gutenberg
 import {
@@ -40,7 +41,7 @@ const IconPickerModal = ({ isOpen, onClose, onSelectIcon, currentIcon }) => {
 	const searchInputRef = useRef(null);
 	
 	// Fetch collections
-	const { collections, isLoading: isLoadingCollections, error: collectionsError } = useIconCollections(isOpen);
+	const { collections, isLoading: isLoadingCollections, isRefreshing, error: collectionsError, refreshCollections } = useIconCollections(isOpen);
 	
 	// Search icons or use default
 	const { icons: searchResults, isLoading: isSearching, error: searchError } = useIconSearch(debouncedSearchQuery, isOpen);
@@ -62,7 +63,7 @@ const IconPickerModal = ({ isOpen, onClose, onSelectIcon, currentIcon }) => {
 		collectionCounts,
 	} = useIconFiltering(allIcons, selectedCollection, ICONS_PER_PAGE);
 	
-	// Determine loading state
+	// Determine loading state - only show loading overlay on initial load, not on refresh
 	const isLoading = isLoadingCollections || isSearching;
 	const error = collectionsError || searchError;
 	
@@ -242,6 +243,15 @@ const IconPickerModal = ({ isOpen, onClose, onSelectIcon, currentIcon }) => {
 									</button>
 								)}
 							</div>
+							<button
+								className="oiib-search-refresh"
+								onClick={refreshCollections}
+								disabled={isRefreshing}
+								aria-label={__('Refresh icon collections', 'omni-icon')}
+								title={__('Refresh icon collections', 'omni-icon')}
+							>
+								<IconRefresh className={isRefreshing ? 'is-spinning' : ''} />
+							</button>
 						</div>
 
 						{/* Collection Filter */}

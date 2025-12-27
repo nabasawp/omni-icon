@@ -3,14 +3,14 @@
 /**
  * @wordpress-plugin
  * Plugin Name:         Omni Icon
- * Plugin URI:          https://github.com/omni-icon
+ * Plugin URI:          https://github.com/nabasa-dev/omni-icon
  * Description:         Add Iconify icon blocks to Gutenberg editor with symfony_ux integration. Browse and use thousands of icons powered by Iconify.
  * Text Domain:         omni-icon
  * Version:             1.0.0
  * Requires at least:   6.0
  * Requires PHP:        8.2
  * Author:              Omni Icon
- * Author URI:          https://github.com/omni-icon
+ * Author URI:          https://github.com/nabasa-dev
  * License:             GPL-2.0-or-later
  *
  * @package             OmniIcon

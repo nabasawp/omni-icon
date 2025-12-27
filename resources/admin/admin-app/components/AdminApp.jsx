@@ -18,9 +18,6 @@ const AdminApp = () => {
 		<div className="omni-icon-admin-wrapper">
 			<div className="omni-icon-admin-header">
 				<h1>{__('Omni Icon', 'omni-icon')}</h1>
-				<p className="description">
-					{__('Upload and manage your custom SVG icons. Uploaded icons will be available across all page builders and blocks.', 'omni-icon')}
-				</p>
 			</div>
 
 			<nav className="omni-icon-admin-tabs">

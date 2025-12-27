@@ -328,6 +328,19 @@ const IconManager = ({ refreshTrigger }) => {
 
 	// Refresh data
 	const handleRefresh = useCallback(async () => {
+		try {
+			// Clear cache first
+			await fetch(`${window.omniIconAdmin.apiUrl}/cache/clear`, {
+				method: 'POST',
+				headers: {
+					'X-WP-Nonce': window.omniIconAdmin.nonce,
+				},
+			});
+		} catch (err) {
+			// Silently fail cache clear, still continue with refresh
+			console.warn('Failed to clear cache:', err);
+		}
+		
 		await fetchIconSets();
 		await fetchIcons();
 	}, [fetchIconSets, fetchIcons]);
@@ -487,16 +500,18 @@ const IconManager = ({ refreshTrigger }) => {
 								<span className="set-card-name">{set.name}</span>
 								<span className="set-card-count">{set.total} {__('icons', 'omni-icon')}</span>
 							</div>
-							<button
-								className="set-card-rename"
-								onClick={(e) => {
-									e.stopPropagation();
-									setRenameSet({ oldName: prefix, newName: prefix });
-								}}
-								title={__('Rename set', 'omni-icon')}
-							>
-								<IconEdit />
-							</button>
+							{prefix !== 'local' && (
+								<button
+									className="set-card-rename"
+									onClick={(e) => {
+										e.stopPropagation();
+										setRenameSet({ oldName: prefix, newName: prefix });
+									}}
+									title={__('Rename set', 'omni-icon')}
+								>
+									<IconEdit />
+								</button>
+							)}
 						</button>
 					))}
 

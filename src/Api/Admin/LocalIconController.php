@@ -220,6 +220,23 @@ final readonly class LocalIconController
     }
 
     /**
+     * Clear icon cache
+     *
+     * @param WP_REST_Request $request
+     * @return WP_REST_Response|WP_Error
+     */
+    #[Route('/cache/clear', 'POST', permission_callback: 'manage_options')]
+    public function clear_cache(WP_REST_Request $request): WP_REST_Response|WP_Error
+    {
+        $this->localIconService->clear_cache();
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => __('Cache cleared successfully', 'omni-icon'),
+        ]);
+    }
+
+    /**
      * Delete a custom icon
      *
      * @param WP_REST_Request $request
