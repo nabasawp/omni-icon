@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Configure php-scoper to properly include `.discovery-skip` files in the release package (the fix in 1.0.2 was incomplete).
+
 ## [1.0.2] - 2025-12-27
 
 ### Fixed

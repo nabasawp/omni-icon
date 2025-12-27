@@ -65,7 +65,13 @@ return [
     // This configuration entry is completely ignored when using Box.
     //
     // For more see: https://github.com/humbug/php-scoper/blob/master/docs/configuration.md#finders-and-paths
-    // 'finders' => [],
+    'finders' => [
+        // Include .discovery-skip files
+        Finder::create()
+            ->files()
+            ->name('.discovery-skip')
+            ->in(dirname(__DIR__)),
+    ],
 
     // List of excluded files, i.e. files for which the content will be left untouched.
     // Paths are relative to the configuration file unless if they are already absolute
