@@ -52,9 +52,9 @@ final class DependencyResolver
                     throw new RuntimeException(
                         sprintf(
                             "Cannot resolve dependency '%s' (parameter '%s') in class %s. Service not found in container.",
-                            $dependencyClassName,
-                            $parameter->getName(),
-                            $className
+                            esc_html($dependencyClassName),
+                            esc_html($parameter->getName()),
+                            esc_html($className)
                         )
                     );
                 }
@@ -66,9 +66,9 @@ final class DependencyResolver
                 throw new RuntimeException(
                     sprintf(
                         "Cannot resolve parameter '%s' of type '%s' in class %s. Primitive types must have default values.",
-                        $parameter->getName(),
-                        $type?->getName() ?? 'unknown',
-                        $className
+                        esc_html($parameter->getName()),
+                        esc_html($type?->getName() ?? 'unknown'),
+                        esc_html($className)
                     )
                 );
             }

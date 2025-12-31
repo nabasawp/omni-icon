@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OmniIcon\Core\Logger;
 
+defined('ABSPATH') || exit;
+
 /**
  * Enum for logger component names
  * 

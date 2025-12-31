@@ -533,7 +533,7 @@ class LocalIconService
             ];
         }
         
-        if (!unlink($file_path)) {
+        if (!wp_delete_file($file_path)) {
             return [
                 'success' => false,
                 'message' => __('Failed to delete icon', 'omni-icon'),
@@ -590,7 +590,8 @@ class LocalIconService
         if (str_contains($query, ':')) {
             [$prefix, $search_term] = explode(':', $query, 2) + ['', ''];
             if ('' === $prefix || '' === $search_term) {
-                throw new IconNotFoundException(\sprintf('The icon name "%s" is not valid.', $query));
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Exception message, not output
+                throw new IconNotFoundException(\sprintf('The icon name "%s" is not valid.', esc_html($query)));
             }
 
             // Search in specific icon set - uses cached icons
@@ -673,8 +674,14 @@ class LocalIconService
             ];
         }
 
-        // Move file
-        if (!rename($source_path, $target_path)) {
+        // Move file using WordPress filesystem API
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        
+        if (!$wp_filesystem->move($source_path, $target_path)) {
             return [
                 'success' => false,
                 'message' => __('Failed to move icon', 'omni-icon'),
@@ -793,8 +800,14 @@ class LocalIconService
             ];
         }
 
-        // Rename directory
-        if (!rename($old_dir, $new_dir)) {
+        // Rename directory using WordPress filesystem API
+        global $wp_filesystem;
+        if (empty($wp_filesystem)) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            WP_Filesystem();
+        }
+        
+        if (!$wp_filesystem->move($old_dir, $new_dir)) {
             return [
                 'success' => false,
                 'message' => __('Failed to rename icon set', 'omni-icon'),

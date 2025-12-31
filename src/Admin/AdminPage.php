@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OmniIcon\Admin;
 
+defined('ABSPATH') || exit;
+
 use OMNI_ICON;
 use OmniIcon\Core\Discovery\Attributes\Hook;
 use OmniIcon\Core\Discovery\Attributes\Service;

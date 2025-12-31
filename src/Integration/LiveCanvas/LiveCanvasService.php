@@ -43,31 +43,32 @@ class LiveCanvasService
             'options' => ['insertAt' => ['after' => 'Icon']]
         ];
 
-        $blockCat = wp_json_encode($block["category"]);;
-        $blockDef = wp_json_encode($block["block"]);;
+        $blockCat = wp_json_encode($block["category"]);
+        $blockDef = wp_json_encode($block["block"]);
         $blockOpts = wp_json_encode($block["options"]);
 
-        echo <<<HTML
-            <script id="omni-icon-lc-add-block">
-            try {
-                if (typeof addBlock === "function") {
-                    addBlock(
-                        {$blockCat},
-                        {$blockDef},
-                        {$blockOpts}
-                    );
-                }
-
-                if (typeof addEditable === "function") {
-                    addEditable('omni-icon', {
-                        selector: 'omni-icon',
-                    });
-                }
-            } catch (e) {
-                console.error(e);
-            }
-            </script>
-        HTML;
+        echo '<script id="omni-icon-lc-add-block">' . "\n";
+        echo 'try {' . "\n";
+        echo '    if (typeof addBlock === "function") {' . "\n";
+        echo '        addBlock(' . "\n";
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON encoded data
+        echo '            ' . $blockCat . ',' . "\n";
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON encoded data
+        echo '            ' . $blockDef . ',' . "\n";
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- JSON encoded data
+        echo '            ' . $blockOpts . "\n";
+        echo '        );' . "\n";
+        echo '    }' . "\n";
+        echo '' . "\n";
+        echo '    if (typeof addEditable === "function") {' . "\n";
+        echo '        addEditable(\'omni-icon\', {' . "\n";
+        echo '            selector: \'omni-icon\',' . "\n";
+        echo '        });' . "\n";
+        echo '    }' . "\n";
+        echo '} catch (e) {' . "\n";
+        echo '    console.error(e);' . "\n";
+        echo '}' . "\n";
+        echo '</script>' . "\n";
     }
 
     #[Hook('lc_define_custom_element')]

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OmniIcon\Core\Discovery;
 
+defined('ABSPATH') || exit;
+
 use OmniIcon\Core\Container\Container;
 use OmniIcon\Core\Container\DependencyResolver;
 use OmniIcon\Core\Discovery\Attributes\Controller;

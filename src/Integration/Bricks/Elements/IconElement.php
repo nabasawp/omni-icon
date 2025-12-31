@@ -183,11 +183,11 @@ class IconElement extends Element
 
         // Render omni-icon with SSR support
         if ($svg !== null) {
-            $output = sprintf('<omni-icon data-prerendered %s>%s</omni-icon>', $this->render_attributes('_root'), $svg);
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes from render_attributes() are escaped, SVG is sanitized by IconService
+            echo sprintf('<omni-icon data-prerendered %s>%s</omni-icon>', $this->render_attributes('_root'), $svg);
         } else {
-            $output = sprintf('<omni-icon %s></omni-icon>', $this->render_attributes('_root'));
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes from render_attributes() are escaped
+            echo sprintf('<omni-icon %s></omni-icon>', $this->render_attributes('_root'));
         }
-
-        echo $output;
     }
 }

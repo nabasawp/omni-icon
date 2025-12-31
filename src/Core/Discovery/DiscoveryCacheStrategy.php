@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace OmniIcon\Core\Discovery;
 
+defined('ABSPATH') || exit;
+
 enum DiscoveryCacheStrategy: string
 {
     case NONE = 'none';

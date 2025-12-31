@@ -4,7 +4,7 @@
  * @wordpress-plugin
  * Plugin Name:         Omni Icon
  * Plugin URI:          https://github.com/nabasa-dev/omni-icon
- * Description:         Add Iconify icon blocks to Gutenberg editor with symfony_ux integration. Browse and use thousands of icons powered by Iconify.
+ * Description:         A modern icon management plugin with support for custom uploads and 200,000+ Iconify icons across multiple page builders.
  * Text Domain:         omni-icon
  * Version:             1.0.0
  * Requires at least:   6.0

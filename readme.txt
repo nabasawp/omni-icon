@@ -1,4 +1,4 @@
-=== Omni Icon - Icon Library for WordPress ===
+=== Omni Icon ===
 Contributors: suabahasa, rosua
 Donate link: https://ko-fi.com/Q5Q75XSF7
 Tags: icons, iconify, gutenberg, svg, icon block
@@ -9,11 +9,11 @@ Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A modern icon management plugin with support for custom uploads, bundled icons, and 200,000+ Iconify icons across multiple page builders.
+A modern icon management plugin with support for custom uploads and 200,000+ Iconify icons across multiple page builders.
 
 == Description ==
 
-### Omni Icon: Modern icon management for WordPress
+### Omni Icon: Modern icon management solution for WordPress
 
 Omni Icon is a comprehensive icon management solution that seamlessly integrates icons across the WordPress ecosystem. Upload custom icons, use bundled icons, or access 200,000+ icons from Iconify with support for Gutenberg, Elementor, Bricks, Breakdance, and LiveCanvas.
 

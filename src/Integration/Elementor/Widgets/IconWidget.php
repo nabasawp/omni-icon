@@ -297,8 +297,10 @@ class IconWidget extends Widget_Base
 
         // Render omni-icon with SSR support
         if ($svg !== null) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are escaped above, SVG is sanitized by IconService
             echo sprintf('<omni-icon data-prerendered%s>%s</omni-icon>', $attrString, $svg);
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are escaped above
             echo sprintf('<omni-icon%s></omni-icon>', $attrString);
         }
     }

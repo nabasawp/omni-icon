@@ -3,6 +3,8 @@
  * @var array $propertiesData
  */
 
+defined('ABSPATH') || exit;
+
 use OmniIcon\Plugin;
 use OmniIcon\Services\IconService;
 
@@ -44,7 +46,9 @@ foreach ($attributes as $key => $value) {
 
 // Output the complete omni-icon element
 if ($svg !== null) {
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are escaped above, SVG is sanitized by IconService
     echo sprintf('<omni-icon data-prerendered%s>%s</omni-icon>', $attr_string, $svg);
 } else {
+    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Attributes are escaped above
     echo sprintf('<omni-icon%s></omni-icon>', $attr_string);
 }
