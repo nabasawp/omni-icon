@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace OmniIcon\Core\Discovery;
 
 use OmniIcon\Core\Container\Container;
-use OmniIcon\Core\Database\Migration\MigrationDiscovery;
 use OmniIcon\Core\Logger\DiscoveryLogger;
 use OmniIcon\Core\Logger\LoggerService;
 use OMNI_ICON;
@@ -118,7 +117,6 @@ final class DiscoveryManager
             new ServiceDiscovery($this->container),
             new HookDiscovery($this->container),
             new CommandDiscovery($this->container, $loggerService),
-            new MigrationDiscovery($this->container, $loggerService),
             new ControllerDiscovery($this->container),
         ];
     }

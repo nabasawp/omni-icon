@@ -5,15 +5,12 @@ declare(strict_types=1);
 namespace OmniIcon\Core\Container;
 
 use OMNI_ICON;
-use OmniIcon\Core\Database\DatabaseInterface;
-use OmniIcon\Core\Database\DatabaseService;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\Messenger\Transport\Serialization\PhpSerializer;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
-use wpdb;
 
 final class Container implements ContainerInterface
 {
@@ -118,17 +115,6 @@ final class Container implements ContainerInterface
         $this->parameter('omni-icon.plugin_url', OMNI_ICON::url());
         $this->parameter('omni-icon.version', OMNI_ICON::VERSION);
 
-        // Register WordPress global $wpdb as a service using factory
-        $wpdbDefinition = new Definition(wpdb::class);
-        $wpdbDefinition->setFactory([self::class, 'createWpdbInstance']);
-        $wpdbDefinition->setPublic(true);
-
-        $this->containerBuilder->setDefinition(wpdb::class, $wpdbDefinition);
-
-        // Register DatabaseInterface alias to DatabaseService
-        $databaseAlias = $this->containerBuilder->setAlias(DatabaseInterface::class, DatabaseService::class);
-        $databaseAlias->setPublic(true);
-
         $this->containerBuilder->setAlias(ContainerInterface::class, 'service_container');
 
         // Register Symfony Messenger Serializer
@@ -144,15 +130,6 @@ final class Container implements ContainerInterface
 
     private function set_synthetic_services(): void
     {
-        // No longer needed - using factory pattern instead
-    }
-
-    /**
-     * Factory method to provide WordPress $wpdb global as a service
-     */
-    public static function createWpdbInstance(): wpdb
-    {
-        global $wpdb;
-        return $wpdb;
+        // Reserved for future synthetic services
     }
 }

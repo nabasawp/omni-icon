@@ -19,10 +19,7 @@ enum LogComponent: string
     case BUNDLE_ICON_SERVICE = 'BundleIconService';
     case DISCOVERY = 'Discovery';
     case COMMAND_DISCOVERY = 'CommandDiscovery';
-    case MIGRATION = 'Migration';
-    case MIGRATION_DISCOVERY = 'MigrationDiscovery';
     case CONTAINER = 'Container';
-    case DATABASE = 'Database';
     case ASSETS = 'Assets';
     case VITE = 'Vite';
 }
