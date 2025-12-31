@@ -21,7 +21,7 @@ final readonly class LocalIconController
     }
 
     /**
-     * Upload a custom SVG icon
+     * Upload custom SVG icon(s)
      *
      * @param WP_REST_Request $request
      * @return WP_REST_Response|WP_Error
@@ -29,7 +29,7 @@ final readonly class LocalIconController
     #[Route('/upload', 'POST', permission_callback: 'manage_options')]
     public function upload_custom_icon(WP_REST_Request $request): WP_REST_Response|WP_Error
     {
-        // Check if file was uploaded
+        // Check if file(s) were uploaded
         if (empty($_FILES['icon'])) {
             return new WP_Error(
                 'no_file',
@@ -38,31 +38,96 @@ final readonly class LocalIconController
             );
         }
 
-        // check mime type with LocalIconService
-        $mime_type = $this->localIconService->detect_mime($_FILES['icon']['tmp_name']);
-        if ($mime_type !== 'image/svg+xml') {
-            return new WP_Error(
-                'invalid_file_type',
-                __('Invalid file type. Only SVG files are allowed.', 'omni-icon'),
-                ['status' => 400]
-            );
-        }
-
         // Get optional icon set (subdirectory)
         $icon_set = $request->get_param('icon_set');
 
-        // Upload and sanitize the icon
-        $result = $this->localIconService->upload_svg($_FILES['icon'], $icon_set);
+        // Check if multiple files were uploaded
+        $is_multiple = is_array($_FILES['icon']['name']);
 
-        if (!$result['success']) {
-            return new WP_Error(
-                'upload_failed',
-                $result['message'],
-                ['status' => 400]
-            );
+        if ($is_multiple) {
+            // Handle multiple file uploads
+            $results = [];
+            $errors = [];
+            $uploaded_count = 0;
+            $total_files = count($_FILES['icon']['name']);
+
+            for ($i = 0; $i < $total_files; $i++) {
+                // Check if file was actually uploaded
+                if (empty($_FILES['icon']['tmp_name'][$i])) {
+                    continue;
+                }
+
+                // Create single file array from multi-file upload
+                $file = [
+                    'name' => $_FILES['icon']['name'][$i],
+                    'type' => $_FILES['icon']['type'][$i],
+                    'tmp_name' => $_FILES['icon']['tmp_name'][$i],
+                    'error' => $_FILES['icon']['error'][$i],
+                    'size' => $_FILES['icon']['size'][$i],
+                ];
+
+                // Check mime type
+                $mime_type = $this->localIconService->detect_mime($file['tmp_name']);
+                if ($mime_type !== 'image/svg+xml') {
+                    $errors[] = [
+                        'filename' => $file['name'],
+                        'message' => __('Invalid file type. Only SVG files are allowed.', 'omni-icon'),
+                    ];
+                    continue;
+                }
+
+                // Upload and sanitize the icon
+                $result = $this->localIconService->upload_svg($file, $icon_set);
+
+                if ($result['success']) {
+                    $results[] = $result;
+                    $uploaded_count++;
+                } else {
+                    $errors[] = [
+                        'filename' => $file['name'],
+                        'message' => $result['message'],
+                    ];
+                }
+            }
+
+            // Return combined results
+            return new WP_REST_Response([
+                'success' => $uploaded_count > 0,
+                'message' => sprintf(
+                    __('%d of %d icons uploaded successfully', 'omni-icon'),
+                    $uploaded_count,
+                    $total_files
+                ),
+                'uploaded_count' => $uploaded_count,
+                'total_count' => $total_files,
+                'results' => $results,
+                'errors' => $errors,
+            ]);
+        } else {
+            // Handle single file upload (backward compatibility)
+            // check mime type with LocalIconService
+            $mime_type = $this->localIconService->detect_mime($_FILES['icon']['tmp_name']);
+            if ($mime_type !== 'image/svg+xml') {
+                return new WP_Error(
+                    'invalid_file_type',
+                    __('Invalid file type. Only SVG files are allowed.', 'omni-icon'),
+                    ['status' => 400]
+                );
+            }
+
+            // Upload and sanitize the icon
+            $result = $this->localIconService->upload_svg($_FILES['icon'], $icon_set);
+
+            if (!$result['success']) {
+                return new WP_Error(
+                    'upload_failed',
+                    $result['message'],
+                    ['status' => 400]
+                );
+            }
+
+            return new WP_REST_Response($result);
         }
-
-        return new WP_REST_Response($result);
     }
 
     /**

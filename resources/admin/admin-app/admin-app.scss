@@ -1647,6 +1647,75 @@ html:has(.folded) {
 .omni-icon-upload-modal {
 	.upload-modal-content {
 		padding: 0;
+		position: relative;
+		transition: all 0.2s ease;
+
+		&.is-drag-over {
+			&::before {
+				opacity: 1;
+			}
+
+			.drag-overlay {
+				opacity: 1;
+				pointer-events: all;
+			}
+
+			.upload-form-field,
+			.target-set-info,
+			.upload-guidelines {
+				opacity: 0.3;
+			}
+		}
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: -4px;
+			left: -4px;
+			right: -4px;
+			bottom: -4px;
+			border: 3px dashed var(--omni-icon-primary-color);
+			border-radius: 12px;
+			opacity: 0;
+			transition: opacity 0.2s ease;
+			pointer-events: none;
+			z-index: 9;
+		}
+
+		.drag-overlay {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			padding: 32px 48px;
+			background: #fff;
+			border: 2px solid var(--omni-icon-primary-color);
+			border-radius: 16px;
+			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+			opacity: 0;
+			pointer-events: none;
+			transition: opacity 0.2s ease;
+			z-index: 10;
+
+			.drag-overlay-icon {
+				width: 64px;
+				height: 64px;
+				color: var(--omni-icon-primary-color);
+				margin-bottom: 12px;
+			}
+
+			.drag-overlay-text {
+				margin: 0;
+				font-size: 16px;
+				font-weight: 600;
+				color: var(--omni-icon-primary-color);
+				white-space: nowrap;
+			}
+		}
 
 		.upload-form-field {
 			margin-bottom: 20px;
@@ -1657,16 +1726,33 @@ html:has(.folded) {
 				min-height: 44px;
 			}
 
+			.upload-hint {
+				margin: 8px 0 0;
+				text-align: center;
+				font-size: 13px;
+				color: #646970;
+			}
+
+			.files-info {
+				margin-top: 12px;
+				max-height: 200px;
+				overflow-y: auto;
+				border: 1px solid #c8e1ff;
+				border-radius: 6px;
+				background: #f0f6fc;
+			}
+
 			.file-info {
 				display: flex;
 				align-items: center;
 				gap: 8px;
-				margin-top: 12px;
 				padding: 12px;
-				background: #f0f6fc;
-				border: 1px solid #c8e1ff;
-				border-radius: 6px;
 				font-size: 14px;
+				border-bottom: 1px solid #c8e1ff;
+
+				&:last-child {
+					border-bottom: none;
+				}
 
 				.icon-success {
 					width: 20px;
@@ -1855,13 +1941,97 @@ html:has(.folded) {
 		}
 
 		.upload-result {
-			display: flex;
-			gap: 16px;
 			padding: 16px;
 			margin: 16px 0;
 			background: color-mix(in srgb, var(--omni-icon-primary-color) 5%, white);
 			border: 2px solid color-mix(in srgb, var(--omni-icon-primary-color) 25%, transparent);
 			border-radius: 10px;
+
+			&:has(.upload-success-list, .upload-error-list) {
+				display: block;
+			}
+
+			&:not(:has(.upload-success-list, .upload-error-list)) {
+				display: flex;
+				gap: 16px;
+			}
+
+			.upload-success-list,
+			.upload-error-list {
+				h4 {
+					margin: 0 0 12px;
+					font-size: 13px;
+					font-weight: 600;
+					color: #1f2937;
+				}
+
+				.result-item,
+				.error-item {
+					display: flex;
+					gap: 12px;
+					align-items: center;
+					padding: 12px;
+					margin-bottom: 8px;
+					background: #fff;
+					border-radius: 8px;
+					border: 2px solid #e5e7eb;
+
+					&:last-child {
+						margin-bottom: 0;
+					}
+
+					.result-preview {
+						flex-shrink: 0;
+						width: 40px;
+						height: 40px;
+						display: flex;
+						align-items: center;
+						justify-content: center;
+						background: #f8f9fa;
+						border-radius: 6px;
+						border: 1px solid var(--omni-icon-primary-color);
+					}
+
+					.result-info {
+						flex: 1;
+						font-size: 13px;
+
+						strong {
+							font-weight: 600;
+							color: #1f2937;
+						}
+
+						code {
+							padding: 2px 6px;
+							background: #f8f9fa;
+							border-radius: 4px;
+							font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+							font-size: 12px;
+							color: #646970;
+						}
+					}
+
+					.icon-error {
+						width: 20px;
+						height: 20px;
+						color: #dc2626;
+						flex-shrink: 0;
+					}
+				}
+			}
+
+			.upload-error-list {
+				margin-top: 16px;
+
+				h4 {
+					color: #dc2626;
+				}
+
+				.error-item {
+					border-color: #fca5a5;
+					background: #fef2f2;
+				}
+			}
 
 			.result-preview {
 				flex-shrink: 0;

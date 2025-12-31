@@ -30,12 +30,14 @@ const IconManager = ({ refreshTrigger }) => {
 	const [newSetName, setNewSetName] = useState('');
 	const [isCreatingSet, setIsCreatingSet] = useState(false);
 	const [uploadModal, setUploadModal] = useState(false);
-	const [selectedFile, setSelectedFile] = useState(null);
+	const [selectedFiles, setSelectedFiles] = useState([]);
 	const [isUploading, setIsUploading] = useState(false);
 	const [uploadStatus, setUploadStatus] = useState(null);
 	const [uploadResult, setUploadResult] = useState(null);
+	const [isDragOver, setIsDragOver] = useState(false);
 	const fileInputRef = useRef(null);
 	const gridRef = useRef(null);
+	const dropZoneRef = useRef(null);
 
 	// Fetch icon sets
 	const fetchIconSets = useCallback(async () => {
@@ -225,42 +227,105 @@ const IconManager = ({ refreshTrigger }) => {
 		}
 	}, [newSetName, fetchIconSets]);
 
-	// Upload icon
-	const handleFileSelect = useCallback((event) => {
-		const file = event.target.files?.[0];
-		
-		if (!file) {
-			setSelectedFile(null);
-			return;
+	// Validate and process files
+	const validateFiles = useCallback((files) => {
+		const validFiles = [];
+		const errors = [];
+
+		for (const file of files) {
+			// Validate file type
+			if (!file.name.toLowerCase().endsWith('.svg')) {
+				errors.push(`${file.name}: ${__('Only SVG files are allowed', 'omni-icon')}`);
+				continue;
+			}
+
+			// Validate file size (1MB max)
+			if (file.size > 1024 * 1024) {
+				errors.push(`${file.name}: ${__('File size must be less than 1MB', 'omni-icon')}`);
+				continue;
+			}
+
+			validFiles.push(file);
 		}
 
-		// Validate file type
-		if (!file.name.toLowerCase().endsWith('.svg')) {
-			setUploadStatus({
-				type: 'error',
-				message: __('Please select an SVG file.', 'omni-icon'),
-			});
-			setSelectedFile(null);
-			return;
-		}
-
-		// Validate file size (1MB max)
-		if (file.size > 1024 * 1024) {
-			setUploadStatus({
-				type: 'error',
-				message: __('File size must be less than 1MB.', 'omni-icon'),
-			});
-			setSelectedFile(null);
-			return;
-		}
-
-		setSelectedFile(file);
-		setUploadStatus(null);
-		setUploadResult(null);
+		return { validFiles, errors };
 	}, []);
 
+	// Upload icon(s) - file input
+	const handleFileSelect = useCallback((event) => {
+		const files = Array.from(event.target.files || []);
+		
+		if (files.length === 0) {
+			setSelectedFiles([]);
+			return;
+		}
+
+		const { validFiles, errors } = validateFiles(files);
+
+		if (errors.length > 0) {
+			setUploadStatus({
+				type: 'error',
+				message: errors.join('\n'),
+			});
+		} else {
+			setUploadStatus(null);
+		}
+
+		setSelectedFiles(validFiles);
+		setUploadResult(null);
+	}, [validateFiles]);
+
+	// Drag and drop handlers for file upload
+	const handleUploadDragEnter = useCallback((e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragOver(true);
+	}, []);
+
+	const handleUploadDragLeave = useCallback((e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		// Only set dragOver to false if we're leaving the drop zone entirely
+		if (dropZoneRef.current && !dropZoneRef.current.contains(e.relatedTarget)) {
+			setIsDragOver(false);
+		}
+	}, []);
+
+	const handleUploadDragOver = useCallback((e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragOver(true);
+	}, []);
+
+	const handleUploadDrop = useCallback((e) => {
+		e.preventDefault();
+		e.stopPropagation();
+		setIsDragOver(false);
+
+		const files = Array.from(e.dataTransfer.files || []);
+		
+		if (files.length === 0) {
+			return;
+		}
+
+		const { validFiles, errors } = validateFiles(files);
+
+		if (errors.length > 0) {
+			setUploadStatus({
+				type: 'error',
+				message: errors.join('\n'),
+			});
+		} else {
+			setUploadStatus(null);
+		}
+
+		setSelectedFiles(validFiles);
+		setUploadResult(null);
+	}, [validateFiles]);
+
 	const handleUploadIcon = useCallback(async () => {
-		if (!selectedFile) {
+		if (selectedFiles.length === 0) {
 			return;
 		}
 
@@ -270,7 +335,11 @@ const IconManager = ({ refreshTrigger }) => {
 
 		try {
 			const formData = new FormData();
-			formData.append('icon', selectedFile);
+			
+			// Append all files with the same field name
+			selectedFiles.forEach((file) => {
+				formData.append('icon[]', file);
+			});
 			
 			// Use selected set from grid (not from input field)
 			const targetSet = selectedSet === 'all' ? '' : selectedSet;
@@ -292,15 +361,34 @@ const IconManager = ({ refreshTrigger }) => {
 				throw new Error(data.message || __('Upload failed', 'omni-icon'));
 			}
 
-			setUploadStatus({
-				type: 'success',
-				message: data.message || __('Icon uploaded successfully!', 'omni-icon'),
-			});
-			
-			setUploadResult(data);
+			// Handle both single and multiple upload responses
+			const isMultiple = data.uploaded_count !== undefined;
+
+			if (isMultiple) {
+				// Multiple file upload response
+				const hasErrors = data.errors && data.errors.length > 0;
+				
+				setUploadStatus({
+					type: hasErrors ? 'warning' : 'success',
+					message: data.message,
+				});
+				
+				setUploadResult({
+					...data,
+					isMultiple: true,
+				});
+			} else {
+				// Single file upload response (backward compatibility)
+				setUploadStatus({
+					type: 'success',
+					message: data.message || __('Icon uploaded successfully!', 'omni-icon'),
+				});
+				
+				setUploadResult(data);
+			}
 			
 			// Reset form
-			setSelectedFile(null);
+			setSelectedFiles([]);
 			if (fileInputRef.current) {
 				fileInputRef.current.value = '';
 			}
@@ -309,12 +397,14 @@ const IconManager = ({ refreshTrigger }) => {
 			await fetchIcons();
 			await fetchIconSets();
 
-			// Auto close after 2 seconds on success
-			setTimeout(() => {
-				setUploadModal(false);
-				setUploadStatus(null);
-				setUploadResult(null);
-			}, 2000);
+			// Auto close after 3 seconds on success (only if no errors)
+			if (!isMultiple || (data.errors && data.errors.length === 0)) {
+				setTimeout(() => {
+					setUploadModal(false);
+					setUploadStatus(null);
+					setUploadResult(null);
+				}, 3000);
+			}
 
 		} catch (error) {
 			setUploadStatus({
@@ -324,7 +414,7 @@ const IconManager = ({ refreshTrigger }) => {
 		} finally {
 			setIsUploading(false);
 		}
-	}, [selectedFile, selectedSet, fetchIcons, fetchIconSets]);
+	}, [selectedFiles, selectedSet, fetchIcons, fetchIconSets]);
 
 	// Refresh data
 	const handleRefresh = useCallback(async () => {
@@ -444,7 +534,7 @@ const IconManager = ({ refreshTrigger }) => {
 						onClick={() => setUploadModal(true)}
 						icon={<IconUpload />}
 					>
-						{__('Upload Icon', 'omni-icon')}
+						{__('Upload Icons', 'omni-icon')}
 					</Button>
 					<Button
 						variant="secondary"
@@ -758,19 +848,35 @@ const IconManager = ({ refreshTrigger }) => {
 			{/* Upload Icon Modal */}
 			{uploadModal && (
 				<Modal
-					title={__('Upload Icon', 'omni-icon')}
+					title={__('Upload Icons', 'omni-icon')}
 					onRequestClose={() => {
 						setUploadModal(false);
-						setSelectedFile(null);
+						setSelectedFiles([]);
 						setUploadStatus(null);
 						setUploadResult(null);
+						setIsDragOver(false);
 					}}
 					className="omni-icon-upload-modal"
 				>
-					<div className="upload-modal-content">
+					<div 
+						className={`upload-modal-content ${isDragOver ? 'is-drag-over' : ''}`}
+						ref={dropZoneRef}
+						onDragEnter={handleUploadDragEnter}
+						onDragOver={handleUploadDragOver}
+						onDragLeave={handleUploadDragLeave}
+						onDrop={handleUploadDrop}
+					>
+						{isDragOver && (
+							<div className="drag-overlay">
+								<IconUpload className="drag-overlay-icon" />
+								<p className="drag-overlay-text">{__('Drop files to upload', 'omni-icon')}</p>
+							</div>
+						)}
+
 						<div className="upload-form-field">
 							<FormFileUpload
 								accept=".svg,image/svg+xml"
+								multiple
 								onChange={handleFileSelect}
 								ref={fileInputRef}
 								render={({ openFileDialog }) => (
@@ -780,17 +886,27 @@ const IconManager = ({ refreshTrigger }) => {
 										icon={<IconUpload />}
 										className="upload-file-button"
 									>
-										{selectedFile ? selectedFile.name : __('Choose SVG File', 'omni-icon')}
+										{selectedFiles.length > 0 
+											? __(`${selectedFiles.length} file(s) selected`, 'omni-icon')
+											: __('Choose SVG File(s)', 'omni-icon')
+										}
 									</Button>
 								)}
 							/>
-							{selectedFile && (
-								<div className="file-info">
-									<IconCheck className="icon-success" />
-									<span>{selectedFile.name}</span>
-									<span className="file-size">
-										({(selectedFile.size / 1024).toFixed(2)} KB)
-									</span>
+							<p className="upload-hint">
+								{__('or drag and drop files here', 'omni-icon')}
+							</p>
+							{selectedFiles.length > 0 && (
+								<div className="files-info">
+									{selectedFiles.map((file, index) => (
+										<div key={index} className="file-info">
+											<IconCheck className="icon-success" />
+											<span>{file.name}</span>
+											<span className="file-size">
+												({(file.size / 1024).toFixed(2)} KB)
+											</span>
+										</div>
+									))}
 								</div>
 							)}
 						</div>
@@ -814,25 +930,70 @@ const IconManager = ({ refreshTrigger }) => {
 								onRemove={() => setUploadStatus(null)}
 								isDismissible
 							>
-								{uploadStatus.message}
+								<div style={{ whiteSpace: 'pre-line' }}>{uploadStatus.message}</div>
 							</Notice>
 						)}
 
-						{uploadResult && uploadResult.icon_name && (
+						{uploadResult && (
 							<div className="upload-result">
-								<div className="result-preview">
-									<omni-icon
-										name={uploadResult.icon_name}
-										width="48"
-										height="48"
-									/>
-								</div>
-								<div className="result-info">
-									<div className="info-row">
-										<strong>{__('Icon Name:', 'omni-icon')}</strong>
-										<code>{uploadResult.icon_name}</code>
-									</div>
-								</div>
+								{uploadResult.isMultiple ? (
+									<>
+										{/* Multiple upload results */}
+										{uploadResult.results && uploadResult.results.length > 0 && (
+											<div className="upload-success-list">
+												<h4>{__('Successfully uploaded:', 'omni-icon')}</h4>
+												{uploadResult.results.map((result, index) => (
+													<div key={index} className="result-item">
+														<div className="result-preview">
+															<omni-icon
+																name={result.icon_name}
+																width="32"
+																height="32"
+															/>
+														</div>
+														<div className="result-info">
+															<strong>{result.filename}</strong>
+															<br />
+															<code>{result.icon_name}</code>
+														</div>
+													</div>
+												))}
+											</div>
+										)}
+										{uploadResult.errors && uploadResult.errors.length > 0 && (
+											<div className="upload-error-list">
+												<h4>{__('Failed uploads:', 'omni-icon')}</h4>
+												{uploadResult.errors.map((error, index) => (
+													<div key={index} className="error-item">
+														<IconX className="icon-error" />
+														<div>
+															<strong>{error.filename}</strong>
+															<br />
+															<span>{error.message}</span>
+														</div>
+													</div>
+												))}
+											</div>
+										)}
+									</>
+								) : uploadResult.icon_name ? (
+									<>
+										{/* Single upload result */}
+										<div className="result-preview">
+											<omni-icon
+												name={uploadResult.icon_name}
+												width="48"
+												height="48"
+											/>
+										</div>
+										<div className="result-info">
+											<div className="info-row">
+												<strong>{__('Icon Name:', 'omni-icon')}</strong>
+												<code>{uploadResult.icon_name}</code>
+											</div>
+										</div>
+									</>
+								) : null}
 							</div>
 						)}
 
@@ -840,8 +1001,9 @@ const IconManager = ({ refreshTrigger }) => {
 							<h4>{__('Guidelines', 'omni-icon')}</h4>
 							<ul>
 								<li><IconAlertCircle /> {__('Only SVG files are accepted', 'omni-icon')}</li>
-								<li><IconAlertCircle /> {__('Maximum file size: 1MB', 'omni-icon')}</li>
+								<li><IconAlertCircle /> {__('Maximum file size: 1MB per file', 'omni-icon')}</li>
 								<li><IconAlertCircle /> {__('Files will be automatically sanitized', 'omni-icon')}</li>
+								<li><IconAlertCircle /> {__('You can select multiple files at once', 'omni-icon')}</li>
 							</ul>
 						</div>
 					</div>
@@ -850,7 +1012,7 @@ const IconManager = ({ refreshTrigger }) => {
 							variant="secondary"
 							onClick={() => {
 								setUploadModal(false);
-								setSelectedFile(null);
+								setSelectedFiles([]);
 								setUploadStatus(null);
 								setUploadResult(null);
 							}}
@@ -862,10 +1024,15 @@ const IconManager = ({ refreshTrigger }) => {
 							variant="primary"
 							onClick={handleUploadIcon}
 							isBusy={isUploading}
-							disabled={!selectedFile || isUploading}
+							disabled={selectedFiles.length === 0 || isUploading}
 							icon={<IconUpload />}
 						>
-							{isUploading ? __('Uploading...', 'omni-icon') : __('Upload Icon', 'omni-icon')}
+							{isUploading 
+								? __('Uploading...', 'omni-icon') 
+								: selectedFiles.length > 1 
+									? __(`Upload ${selectedFiles.length} Icons`, 'omni-icon')
+									: __('Upload Icon', 'omni-icon')
+							}
 						</Button>
 					</div>
 				</Modal>
