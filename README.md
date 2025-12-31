@@ -40,15 +40,12 @@ Seamless integration with the most popular visual/page builders:
 
 ### Local Icons (Custom Uploads)
 
-> [!WARNING]
-> The admin page for uploading local icons is currently in development. However, the REST API endpoints and backend functionality are fully functional.
-
 Upload your own SVG icons via admin page or manually place them in the storage directory:
 
 - Format: `local:icon-name` or `custom-set:icon-name`
 - Organized in sets via subdirectories
 - SVG sanitization for security
-- Manual upload: Place SVG files in the storage directory
+- Manual upload (optional): Place SVG files in the storage directory
 
 **Storage**: `wp-content/uploads/omni-icon/local/`
 
