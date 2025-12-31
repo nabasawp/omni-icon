@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Multiple and drag-and-drop icon upload support - upload multiple SVG files at once
+- Multi-select icons with keyboard shortcuts (Ctrl/Cmd+Click, Shift+Click) and mouse drag area selection for bulk operations
 
 ## [1.0.1] - 2025-12-31
 

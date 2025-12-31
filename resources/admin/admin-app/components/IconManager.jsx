@@ -24,6 +24,11 @@ const IconManager = ({ refreshTrigger }) => {
 	const [deleteModal, setDeleteModal] = useState(null);
 	const [isDeleting, setIsDeleting] = useState(false);
 	const [draggedIcon, setDraggedIcon] = useState(null);
+	const [selectedIcons, setSelectedIcons] = useState(new Set());
+	const [lastSelectedIndex, setLastSelectedIndex] = useState(null);
+	const [isSelecting, setIsSelecting] = useState(false);
+	const [selectionStart, setSelectionStart] = useState(null);
+	const [selectionBox, setSelectionBox] = useState(null);
 	const [renameSet, setRenameSet] = useState(null); // { oldName: string, newName: string }
 	const [isRenamingSet, setIsRenamingSet] = useState(false);
 	const [createSetModal, setCreateSetModal] = useState(false);
@@ -119,6 +124,96 @@ const IconManager = ({ refreshTrigger }) => {
 			setIsDeleting(false);
 		}
 	}, [fetchIcons, fetchIconSets]);
+
+	// Bulk delete icons
+	const handleBulkDelete = useCallback(async () => {
+		if (selectedIcons.size === 0) return;
+
+		setIsDeleting(true);
+		const iconNames = Array.from(selectedIcons);
+		const errors = [];
+
+		try {
+			// Delete icons sequentially
+			for (const iconName of iconNames) {
+				try {
+					const response = await fetch(`${window.omniIconAdmin.apiUrl}/${iconName}`, {
+						method: 'DELETE',
+						headers: {
+							'X-WP-Nonce': window.omniIconAdmin.nonce,
+						},
+					});
+
+					if (!response.ok) {
+						const data = await response.json();
+						errors.push(`${iconName}: ${data.message || 'Failed to delete'}`);
+					}
+				} catch (err) {
+					errors.push(`${iconName}: ${err.message}`);
+				}
+			}
+
+			// Refresh icons and sets
+			await fetchIcons();
+			await fetchIconSets();
+			
+			setDeleteModal(null);
+			setSelectedIcons(new Set());
+
+			if (errors.length > 0) {
+				setError(__('Some icons failed to delete:\n', 'omni-icon') + errors.join('\n'));
+			}
+		} catch (err) {
+			setError(err.message);
+		} finally {
+			setIsDeleting(false);
+		}
+	}, [selectedIcons, fetchIcons, fetchIconSets]);
+
+	// Bulk move icons
+	const handleBulkMove = useCallback(async (targetSet) => {
+		if (selectedIcons.size === 0) return;
+
+		const iconNames = Array.from(selectedIcons);
+		const errors = [];
+
+		try {
+			// Move icons sequentially
+			for (const iconName of iconNames) {
+				try {
+					const response = await fetch(`${window.omniIconAdmin.apiUrl}/move`, {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-WP-Nonce': window.omniIconAdmin.nonce,
+						},
+						body: JSON.stringify({
+							icon_name: iconName,
+							target_set: targetSet === 'local' ? null : targetSet,
+						}),
+					});
+
+					if (!response.ok) {
+						const data = await response.json();
+						errors.push(`${iconName}: ${data.message || 'Failed to move'}`);
+					}
+				} catch (err) {
+					errors.push(`${iconName}: ${err.message}`);
+				}
+			}
+
+			// Refresh icons and sets
+			await fetchIcons();
+			await fetchIconSets();
+			setSelectedIcons(new Set());
+
+			if (errors.length > 0) {
+				setError(__('Some icons failed to move:\n', 'omni-icon') + errors.join('\n'));
+			}
+		} catch (err) {
+			setError(err.message);
+		}
+	}, [selectedIcons, fetchIcons, fetchIconSets]);
 
 	// Move icon to different set
 	const handleMoveIcon = useCallback(async (iconName, targetSet) => {
@@ -435,16 +530,25 @@ const IconManager = ({ refreshTrigger }) => {
 		await fetchIcons();
 	}, [fetchIconSets, fetchIcons]);
 
-	// Icon selection
-	const handleSelectIcon = useCallback((iconName) => {
-		setSelectedIcon(prevIcon => prevIcon === iconName ? null : iconName);
+	// Clear selection
+	const handleClearSelection = useCallback(() => {
+		setSelectedIcons(new Set());
+		setSelectedIcon(null);
+		setLastSelectedIndex(null);
 	}, []);
 
 	// Drag and drop handlers
 	const handleDragStart = useCallback((e, icon) => {
-		setDraggedIcon(icon);
+		// Check if this icon is part of multi-selection
+		if (selectedIcons.has(icon.icon_name)) {
+			// Dragging multiple icons
+			setDraggedIcon({ isMultiple: true, icons: Array.from(selectedIcons) });
+		} else {
+			// Dragging single icon
+			setDraggedIcon(icon);
+		}
 		e.dataTransfer.effectAllowed = 'move';
-	}, []);
+	}, [selectedIcons]);
 
 	const handleDragEnd = useCallback(() => {
 		setDraggedIcon(null);
@@ -457,11 +561,28 @@ const IconManager = ({ refreshTrigger }) => {
 
 	const handleDropOnSet = useCallback((e, targetSet) => {
 		e.preventDefault();
-		if (draggedIcon && draggedIcon.icon_set !== targetSet) {
-			handleMoveIcon(draggedIcon.icon_name, targetSet);
+		if (draggedIcon) {
+			if (draggedIcon.isMultiple) {
+				// Move multiple icons
+				handleBulkMove(targetSet);
+			} else if (draggedIcon.icon_set !== targetSet) {
+				// Move single icon
+				handleMoveIcon(draggedIcon.icon_name, targetSet);
+			}
 		}
 		setDraggedIcon(null);
-	}, [draggedIcon, handleMoveIcon]);
+	}, [draggedIcon, handleMoveIcon, handleBulkMove]);
+
+	// Check if a set is a valid drop target
+	const isValidDropTarget = useCallback((targetSet) => {
+		if (!draggedIcon) return false;
+		
+		if (draggedIcon.isMultiple) {
+			return true; // Always allow dropping multiple icons
+		}
+		
+		return draggedIcon.icon_set !== targetSet;
+	}, [draggedIcon]);
 
 	// Filter icons by search query
 	const filteredIcons = useMemo(() => {
@@ -475,6 +596,163 @@ const IconManager = ({ refreshTrigger }) => {
 			icon.icon_name.toLowerCase().includes(query)
 		);
 	}, [icons, searchQuery]);
+
+	// Icon selection with Ctrl/Cmd and Shift support
+	const handleSelectIcon = useCallback((iconName, index, event) => {
+		const isCtrlClick = event?.ctrlKey || event?.metaKey;
+		const isShiftClick = event?.shiftKey;
+
+		if (isCtrlClick) {
+			// Ctrl/Cmd+Click: Toggle individual selection
+			setSelectedIcons(prev => {
+				const newSet = new Set(prev);
+				if (newSet.has(iconName)) {
+					newSet.delete(iconName);
+				} else {
+					newSet.add(iconName);
+				}
+				return newSet;
+			});
+			setLastSelectedIndex(index);
+			setSelectedIcon(null);
+		} else if (isShiftClick && lastSelectedIndex !== null) {
+			// Shift+Click: Range selection
+			const start = Math.min(lastSelectedIndex, index);
+			const end = Math.max(lastSelectedIndex, index);
+			const rangeIcons = filteredIcons.slice(start, end + 1).map(icon => icon.icon_name);
+			
+			setSelectedIcons(prev => {
+				const newSet = new Set(prev);
+				rangeIcons.forEach(name => newSet.add(name));
+				return newSet;
+			});
+			setSelectedIcon(null);
+		} else if (selectedIcons.size > 0) {
+			// If multi-selection exists, clicking without modifiers clears it
+			setSelectedIcons(new Set());
+			setSelectedIcon(iconName);
+			setLastSelectedIndex(index);
+		} else {
+			// Single select mode
+			setSelectedIcon(prevIcon => prevIcon === iconName ? null : iconName);
+			setSelectedIcons(new Set());
+			setLastSelectedIndex(index);
+		}
+	}, [lastSelectedIndex, filteredIcons, selectedIcons.size]);
+
+	// Mouse area selection (marquee/lasso)
+	const handleMouseDown = useCallback((e) => {
+		// Only start selection on wrapper/grid background, not on icons or buttons
+		const isOnBackground = e.target.classList.contains('omni-icon-grid') || 
+		                        e.target.classList.contains('omni-icon-content-wrapper');
+		
+		if (isOnBackground && gridRef.current) {
+			const rect = gridRef.current.getBoundingClientRect();
+			setIsSelecting(true);
+			setSelectionStart({
+				x: e.clientX - rect.left,
+				y: e.clientY - rect.top + gridRef.current.scrollTop,
+			});
+			setSelectionBox(null);
+			
+			// Clear selection if not holding Ctrl/Cmd
+			if (!e.ctrlKey && !e.metaKey) {
+				setSelectedIcons(new Set());
+			}
+		}
+	}, []);
+
+	const handleMouseMove = useCallback((e) => {
+		if (!isSelecting || !selectionStart || !gridRef.current) return;
+
+		const rect = gridRef.current.getBoundingClientRect();
+		const currentX = e.clientX - rect.left;
+		const currentY = e.clientY - rect.top + gridRef.current.scrollTop;
+
+		const box = {
+			left: Math.min(selectionStart.x, currentX),
+			top: Math.min(selectionStart.y, currentY),
+			width: Math.abs(currentX - selectionStart.x),
+			height: Math.abs(currentY - selectionStart.y),
+		};
+
+		setSelectionBox(box);
+
+		// Find icons within selection box
+		const gridItems = gridRef.current.querySelectorAll('.omni-icon-item');
+		const newSelectedIcons = new Set(e.ctrlKey || e.metaKey ? selectedIcons : []);
+
+		gridItems.forEach((item) => {
+			const itemRect = item.getBoundingClientRect();
+			const itemRelativeRect = {
+				left: itemRect.left - rect.left,
+				top: itemRect.top - rect.top + gridRef.current.scrollTop,
+				right: itemRect.right - rect.left,
+				bottom: itemRect.bottom - rect.top + gridRef.current.scrollTop,
+			};
+
+			// Check if item intersects with selection box
+			const intersects = !(
+				itemRelativeRect.right < box.left ||
+				itemRelativeRect.left > box.left + box.width ||
+				itemRelativeRect.bottom < box.top ||
+				itemRelativeRect.top > box.top + box.height
+			);
+
+			if (intersects) {
+				const iconName = item.querySelector('.omni-icon-item-name')?.textContent;
+				const iconData = filteredIcons.find(icon => icon.name === iconName);
+				if (iconData) {
+					newSelectedIcons.add(iconData.icon_name);
+				}
+			}
+		});
+
+		setSelectedIcons(newSelectedIcons);
+	}, [isSelecting, selectionStart, selectedIcons, filteredIcons]);
+
+	const handleMouseUp = useCallback(() => {
+		setIsSelecting(false);
+		setSelectionStart(null);
+		setSelectionBox(null);
+	}, []);
+
+	// Add global mouse up listener
+	useEffect(() => {
+		if (isSelecting) {
+			document.addEventListener('mouseup', handleMouseUp);
+			return () => document.removeEventListener('mouseup', handleMouseUp);
+		}
+	}, [isSelecting, handleMouseUp]);
+
+	// Keyboard shortcuts
+	useEffect(() => {
+		const handleKeyDown = (e) => {
+			// Escape: Clear selection
+			if (e.key === 'Escape' && selectedIcons.size > 0) {
+				handleClearSelection();
+			}
+			
+			// Delete/Backspace: Delete selected icons
+			if ((e.key === 'Delete' || e.key === 'Backspace') && selectedIcons.size > 0) {
+				// Don't trigger if user is typing in an input
+				if (!['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+					e.preventDefault();
+					setDeleteModal({ isMultiple: true, count: selectedIcons.size });
+				}
+			}
+
+			// Ctrl/Cmd + A: Select all visible icons
+			if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
+				e.preventDefault();
+				setSelectedIcons(new Set(filteredIcons.map(icon => icon.icon_name)));
+				setSelectedIcon(null);
+			}
+		};
+
+		document.addEventListener('keydown', handleKeyDown);
+		return () => document.removeEventListener('keydown', handleKeyDown);
+	}, [selectedIcons.size, handleClearSelection, filteredIcons]);
 
 	// Convert icons to IconItem format
 	const iconItems = useMemo(() => {
@@ -578,7 +856,7 @@ const IconManager = ({ refreshTrigger }) => {
 					{Object.entries(iconSets).map(([prefix, set]) => (
 						<button
 							key={prefix}
-							className={`set-card ${selectedSet === prefix ? 'is-active' : ''} ${draggedIcon && draggedIcon.icon_set !== prefix ? 'is-drop-target' : ''}`}
+							className={`set-card ${selectedSet === prefix ? 'is-active' : ''} ${draggedIcon && isValidDropTarget(prefix) ? 'is-drop-target' : ''}`}
 							onClick={() => setSelectedSet(prefix)}
 							onDragOver={handleDragOver}
 							onDrop={(e) => handleDropOnSet(e, prefix)}
@@ -646,25 +924,47 @@ const IconManager = ({ refreshTrigger }) => {
 			)}
 
 			{/* Icons Grid */}
-			<div className="omni-icon-content-wrapper">
+			<div 
+				className="omni-icon-content-wrapper"
+				onMouseDown={handleMouseDown}
+				onMouseMove={handleMouseMove}
+				style={{ position: 'relative', userSelect: 'none' }}
+			>
 				{isLoading ? (
 					<div className="omni-icon-loading">
 						<Spinner />
 						<p>{__('Loading icons...', 'omni-icon')}</p>
 					</div>
 				) : iconItems.length > 0 ? (
-					<div className="omni-icon-grid" ref={gridRef}>
+					<div 
+						className="omni-icon-grid" 
+						ref={gridRef}
+					>
 						{iconItems.map((icon, index) => (
 							<LocalIconItem
 								key={icon.name}
 								icon={icon}
-								isSelected={icon.name === selectedIcon}
+								isSelected={selectedIcons.has(icon.name) || icon.name === selectedIcon}
 								onSelect={handleSelectIcon}
 								onDragStart={handleDragStart}
 								onDragEnd={handleDragEnd}
 								index={index}
 							/>
 						))}
+						{/* Selection Box Overlay */}
+						{selectionBox && (
+							<div
+								className="omni-icon-selection-box"
+								style={{
+									position: 'absolute',
+									left: `${selectionBox.left}px`,
+									top: `${selectionBox.top}px`,
+									width: `${selectionBox.width}px`,
+									height: `${selectionBox.height}px`,
+									pointerEvents: 'none',
+								}}
+							/>
+						)}
 					</div>
 				) : (
 					<div className="omni-icon-empty">
@@ -685,8 +985,43 @@ const IconManager = ({ refreshTrigger }) => {
 				)}
 			</div>
 
-			{/* Action Footer - shown when icon is selected */}
-			{selectedIcon && selectedIconData && (
+			{/* Floating Action Bar - shown when multiple icons are selected */}
+			{selectedIcons.size > 0 && (
+				<div className="omni-icon-floating-action-bar">
+					<div className="floating-bar-content">
+						<div className="selection-info">
+							<span className="selection-count-badge">{selectedIcons.size}</span>
+							<span className="selection-text">
+								{selectedIcons.size === 1 
+									? __('1 icon selected', 'omni-icon')
+									: __(`${selectedIcons.size} icons selected`, 'omni-icon')
+								}
+							</span>
+						</div>
+						<div className="action-buttons">
+							<Button
+								variant="secondary"
+								onClick={handleClearSelection}
+								size="compact"
+							>
+								{__('Clear Selection', 'omni-icon')}
+							</Button>
+							<Button
+								variant="secondary"
+								onClick={() => setDeleteModal({ isMultiple: true, count: selectedIcons.size })}
+								icon={<IconTrash />}
+								isDestructive
+								size="compact"
+							>
+								{__('Delete', 'omni-icon')} ({selectedIcons.size})
+							</Button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			{/* Action Footer - shown when single icon is selected */}
+			{selectedIcon && selectedIconData && !selectedIcons.size && (
 				<div className="omni-icon-action-footer">
 					<div className="selected-icon-preview">
 						<omni-icon
@@ -721,24 +1056,57 @@ const IconManager = ({ refreshTrigger }) => {
 			{/* Delete Confirmation Modal */}
 			{deleteModal && (
 				<Modal
-					title={__('Delete Icon', 'omni-icon')}
+					title={deleteModal.isMultiple 
+						? __('Delete Multiple Icons', 'omni-icon')
+						: __('Delete Icon', 'omni-icon')
+					}
 					onRequestClose={() => setDeleteModal(null)}
 					className="omni-icon-delete-modal"
 				>
 					<div className="delete-modal-content">
-						<p>{__('Are you sure you want to delete this icon?', 'omni-icon')}</p>
-						<div className="delete-preview">
-							<omni-icon
-								name={deleteModal.iconName}
-								width="64"
-								height="64"
-							/>
-							<div>
-								<strong>{deleteModal.iconData.name}</strong>
-								<br />
-								<code>{deleteModal.iconName}</code>
-							</div>
-						</div>
+						{deleteModal.isMultiple ? (
+							<>
+								<p>
+									{__(`Are you sure you want to delete ${deleteModal.count} icons?`, 'omni-icon')}
+								</p>
+								<div className="delete-preview-grid">
+									{Array.from(selectedIcons).slice(0, 6).map(iconName => {
+										const iconData = filteredIcons.find(i => i.icon_name === iconName);
+										return (
+											<div key={iconName} className="delete-preview-item">
+												<omni-icon
+													name={iconName}
+													width="32"
+													height="32"
+												/>
+												<span>{iconData?.name || iconName}</span>
+											</div>
+										);
+									})}
+									{selectedIcons.size > 6 && (
+										<div className="delete-preview-more">
+											+{selectedIcons.size - 6} {__('more', 'omni-icon')}
+										</div>
+									)}
+								</div>
+							</>
+						) : (
+							<>
+								<p>{__('Are you sure you want to delete this icon?', 'omni-icon')}</p>
+								<div className="delete-preview">
+									<omni-icon
+										name={deleteModal.iconName}
+										width="64"
+										height="64"
+									/>
+									<div>
+										<strong>{deleteModal.iconData.name}</strong>
+										<br />
+										<code>{deleteModal.iconName}</code>
+									</div>
+								</div>
+							</>
+						)}
 						<p className="warning">
 							{__('This action cannot be undone.', 'omni-icon')}
 						</p>
@@ -754,11 +1122,16 @@ const IconManager = ({ refreshTrigger }) => {
 						<Button
 							variant="primary"
 							isDestructive
-							onClick={() => handleDeleteIcon(deleteModal.iconName)}
+							onClick={() => deleteModal.isMultiple ? handleBulkDelete() : handleDeleteIcon(deleteModal.iconName)}
 							isBusy={isDeleting}
 							disabled={isDeleting}
 						>
-							{isDeleting ? __('Deleting...', 'omni-icon') : __('Delete', 'omni-icon')}
+							{isDeleting 
+								? __('Deleting...', 'omni-icon') 
+								: deleteModal.isMultiple 
+									? __(`Delete ${deleteModal.count} Icons`, 'omni-icon')
+									: __('Delete', 'omni-icon')
+							}
 						</Button>
 					</div>
 				</Modal>

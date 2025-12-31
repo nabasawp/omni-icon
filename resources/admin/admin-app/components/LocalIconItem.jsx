@@ -8,7 +8,7 @@ import IconCheck from '~icons/tabler/check';
  */
 const LocalIconItem = memo(({ 
 	icon, 
-	isSelected, 
+	isSelected,
 	onSelect,
 	onDragStart,
 	onDragEnd,
@@ -34,16 +34,17 @@ const LocalIconItem = memo(({
 		setIsOverflowing(false);
 	}, []);
 
-	const handleClick = useCallback(() => {
-		onSelect(icon.name);
-	}, [icon.name, onSelect]);
+	const handleClick = useCallback((e) => {
+		e.stopPropagation(); // Prevent grid mousedown
+		onSelect(icon.name, index, e);
+	}, [icon.name, index, onSelect]);
 
 	const handleKeyDown = useCallback((e) => {
 		if (e.key === 'Enter' || e.key === ' ') {
 			e.preventDefault();
-			onSelect(icon.name);
+			onSelect(icon.name, index, e);
 		}
-	}, [icon.name, onSelect]);
+	}, [icon.name, index, onSelect]);
 
 	const handleDragStart = useCallback((e) => {
 		// Find the full icon data to pass
