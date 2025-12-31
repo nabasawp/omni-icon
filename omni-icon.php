@@ -6,7 +6,7 @@
  * Plugin URI:          https://github.com/nabasa-dev/omni-icon
  * Description:         A modern icon management plugin with support for custom uploads and 200,000+ Iconify icons across multiple page builders.
  * Text Domain:         omni-icon
- * Version:             1.0.0
+ * Version:             1.0.1
  * Requires at least:   6.0
  * Requires PHP:        8.2
  * Author:              Omni Icon
