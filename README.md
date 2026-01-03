@@ -94,31 +94,23 @@ Use the `<omni-icon>` web component directly in your theme or content:
 
 1. In the block editor, add a new "Omni Icon" block
 2. Click the icon picker to browse or search icons
-3. Select from local, bundle, or Iconify collections
-4. Adjust width, height, and color as needed
-5. The icon will be rendered on the frontend using SSR
 
 ### Page Builders
 
 **Elementor**:
-- Add the "Omni Icon" widget from the "Omni Icon" category
-- Use native Elementor controls for color, size, and alignment
+- Add the "Omni Icon" widget
 - Click "Browse Icons" to open the icon picker
 
 **Bricks**:
-- Add the "Omni Icon" element from the "general" category
-- Full theme compatibility with dynamic data support
-- SSR rendering for optimal performance
+- Add the "Omni Icon" element
+- Click "Browse Icons" to open the icon picker
 
 **Breakdance**:
-- Add the "Omni Icon" element from Element Studio
-- Custom controls with size and color options
-- SSR support via PHP rendering
+- Add the "Omni Icon" element
+- Click "Browse Icons" to open the icon picker
 
 **LiveCanvas**:
-- Add the "Omni Icon" block
-- Use custom panel with size slider and color widget
-- Client-side state management
+- Add the "Omni Icon" element
 
 ## Performance
 
@@ -129,8 +121,7 @@ Use the `<omni-icon>` web component directly in your theme or content:
 
 ## Security
 
-- ✅ **SVG Sanitization**: All uploaded SVGs sanitized to prevent XSS (enshrined/svg-sanitize)
-- ✅ **MIME Type Validation**: Server-side validation of uploaded files
+All uploaded SVGs are validate for the MIME type and sanitized to prevent XSS (enshrined/svg-sanitize)
 
 ## Development
 
